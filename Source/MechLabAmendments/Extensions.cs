@@ -10,6 +10,7 @@ using System.Linq;
 using UnityEngine;
 using TMPro;
 using HBS;
+using HBS.Collections;
 
 namespace MechLabAmendments
 {
@@ -22,9 +23,21 @@ namespace MechLabAmendments
             errorDescriptions = new List<string>();
 
             MechLabInventoryWidget inventoryWidget = (MechLabInventoryWidget)AccessTools.Field(typeof(MechLabPanel), "inventoryWidget").GetValue(mechLabPanel);
+            MechLabDismountWidget dismountWidget = (MechLabDismountWidget)AccessTools.Field(typeof(MechLabPanel), "dismountWidget").GetValue(mechLabPanel);
+
             List<MechComponentRef> activeMechInventory = mechLabPanel.activeMechInventory;
             MechComponentRef[] mechComponentsArray = (MechComponentRef[])AccessTools.Field(typeof(MechDef), "inventory").GetValue(mechDef);
             List<MechComponentRef> mechComponentsRequired = mechComponentsArray.ToList();
+
+            // Remove fixed equipment as it will be ignored from dismounting et all
+            for (int i = mechComponentsRequired.Count - 1; i >= 0; i--)
+            {
+                if (mechComponentsRequired[i].IsFixed)
+                {
+                    Logger.LogLine("[Extensions.CanApplyLoadout] FOUND AND WILL REMOVE FIXED EQUIPMENT: " + mechComponentsRequired[i].ComponentDefID);
+                    mechComponentsRequired.RemoveAt(i);
+                }
+            }
 
             // Check current inventory
             for (int i = mechComponentsRequired.Count - 1; i >= 0; i--)
@@ -32,6 +45,18 @@ namespace MechLabAmendments
                 for (int j = activeMechInventory.Count - 1; j >= 0; j--)
                 {
                     if (mechComponentsRequired[i].ComponentDefID == activeMechInventory[j].ComponentDefID)
+                    {
+                        mechComponentsRequired.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+            // Check dismount too (as command could also be triggered with already stripped equipment)
+            for (int i = mechComponentsRequired.Count - 1; i >= 0; i--)
+            {
+                for (int j = dismountWidget.localInventory.Count - 1; j >= 0; j--)
+                {
+                    if (mechComponentsRequired[i].ComponentDefID == dismountWidget.localInventory[j].ComponentRef.ComponentDefID)
                     {
                         mechComponentsRequired.RemoveAt(i);
                         break;
@@ -317,11 +342,22 @@ namespace MechLabAmendments
                 MechComponentRef[] requestedMechComponentsArray = (MechComponentRef[])AccessTools.Field(typeof(MechDef), "inventory").GetValue(requestedMechDef);
                 List<MechComponentRef> requestedMechComponents = requestedMechComponentsArray.ToList();
 
+                // Remove fixed equipment as it will be ignored from dismounting et all
+                for (int i = requestedMechComponents.Count - 1; i >= 0; i--)
+                {
+                    if (requestedMechComponents[i].IsFixed)
+                    {
+                        Logger.LogLine("[Extensions.ResetToStock] FOUND AND WILL REMOVE FIXED EQUIPMENT: " + requestedMechComponents[i].ComponentDefID);
+                        requestedMechComponents.RemoveAt(i);
+                    }
+                }
+
                 // This puts the current equipment into dismountWidget and also clears the Mechs inventory
+                // NOTE that fixed equipment will stay where it is -> must be removed from requestedComponents manually!
                 mechLabPanel.OnStripEquipment();
 
                 // Collect items from dismountWidget and/or inventoryWidget
-                List<MechComponentRef> requestedMechComponentsRequired = requestedMechComponentsArray.ToList();
+                List<MechComponentRef> requestedMechComponentsRequired = requestedMechComponents.ToList();
 
                 //List<MechLabItemSlotElement> activeMechDismountedItems = new List<MechLabItemSlotElement>(dismountWidget.localInventory);
                 List<MechLabItemSlotElement> activeMechDismountedItems = dismountWidget.localInventory;
@@ -467,8 +503,16 @@ namespace MechLabAmendments
                     mechLabPanel.SetArmor(LocationPair.Value, requestedMechDef.GetLocationLoadoutDef(LocationPair.Key));
                 }
 
+
+
                 // Refresh main inventory
                 mechLabPanel.activeMechInventory = new List<MechComponentRef>(requestedMechDef.Inventory);
+                //ReflectionHelper.InvokePrivateMethode(mechLabPanel.activeMechDef, "InsertFixedEquipmentIntoInventory", null);
+
+                // Better as it calls RefreshInventory()? -> No, Tonnage is not adjusted... need to look into it somewhen
+                //mechLabPanel.activeMechDef.SetInventory(requestedMechDef.Inventory);
+
+
 
                 // Update dependent widgets
                 mechInfoWidget.RefreshInfo();
@@ -514,7 +558,10 @@ namespace MechLabAmendments
         public static void SetEquipment(this MechLabPanel mechLabPanel, List<InventoryItemElement_Simple> equipment, MechLabLocationWidget locationWidget, LocationLoadoutDef loadout)
         {
             locationWidget.loadout = loadout;
-            locationWidget.ClearInventory();
+
+            // Nah. This kills fixed equipment!
+            //locationWidget.ClearInventory();
+
             for (int i = 0; i < equipment.Count; i++)
             {
                 if (equipment[i].ComponentRef.MountedLocation == loadout.Location)
@@ -535,7 +582,7 @@ namespace MechLabAmendments
                         mechLabItemSlotElement.gameObject.transform.SetParent(___inventoryParent, false);
                         mechLabItemSlotElement.gameObject.transform.localScale = Vector3.one;
 
-                        //ReflectionHelper.InvokePrivateMethode(locationWidget, "RefreshMechComponentData", new object[] { mechLabItemSlotElement, false });
+                        ReflectionHelper.InvokePrivateMethode(locationWidget, "RefreshMechComponentData", new object[] { mechLabItemSlotElement, false });
 
                         // Add WorkOrderEntry 
                         WorkOrderEntry_InstallComponent subEntry = locationWidget.Sim.CreateComponentInstallWorkOrder(mechLabPanel.baseWorkOrder.MechID, equipment[i].ComponentRef, loadout.Location, ChassisLocations.None);
@@ -549,13 +596,33 @@ namespace MechLabAmendments
 
 
 
-        public static void ExportCurrentMechDefToJson(this MechLabPanel mechLabPanel, string mechDefId)
+        public static void ExportCurrentMechDefToJson(this MechLabPanel mechLabPanel, string mechDefId, string mechDefName)
         {
             try
             {
-                MechDef mechDef = mechLabPanel.activeMechDef;
+                MechDef mechDef = new MechDef(mechLabPanel.activeMechDef, null, true);
                 MechDef baseMechDef = new MechDef(mechLabPanel.Sim.DataManager.MechDefs.Get(mechDef.Description.Id), null, false);
+                MechComponentRef[] mechDefInventory = (MechComponentRef[])AccessTools.Field(typeof(MechDef), "inventory").GetValue(mechDef);
 
+                // CHECK
+                foreach (MechComponentRef component in mechDefInventory)
+                {
+                    Logger.LogLine("[Extensions.ExportCurrentMechDefToJson] mechDefInventory: " + component.ComponentDefID + ", isFixed: " + component.IsFixed);
+                }
+
+                // Remove fixed equipment as it will be ignored from dismounting et all
+                MechComponentRef[] mechDefInventoryFiltered = mechDefInventory.Where(component => component.IsFixed != true).ToArray();
+                
+                // CHECK
+                foreach (MechComponentRef component in mechDefInventoryFiltered)
+                {
+                    Logger.LogLine("[Extensions.ExportCurrentMechDefToJson] mechDefInventoryFiltered: " + component.ComponentDefID + ", isFixed: " + component.IsFixed);
+                }
+                AccessTools.Field(typeof(MechDef), "inventory").SetValue(mechDef, mechDefInventoryFiltered);
+
+
+
+                // Set some halfway correct value for part value
                 int simGameMechPartCost = mechDef.SimGameMechPartCost > 0 ? mechDef.SimGameMechPartCost : (mechDef.BattleValue / 10);
 
                 string baseDirectory = $"{ MechLabAmendments.ModDirectory}";
@@ -565,6 +632,7 @@ namespace MechLabAmendments
                 // Remove append-flag at some point
                 using (StreamWriter writer = new StreamWriter(filePath, false))
                 {
+                    /*
                     var p = new JSONParameters
                     {
                         EnableAnonymousTypes = true,
@@ -573,14 +641,18 @@ namespace MechLabAmendments
                         KVStyleStringDictionary = false,
                         SerializeNullValues = false
                     };
+                    string json = JSON.ToNiceJSON(mechDef, p);
+                    */
 
-                    //string json = JSON.ToNiceJSON(mechDef, p);
                     string mechDefJson = mechDef.ToJSON();
-                    string baseMechDefMechTagsJson = baseMechDef.MechTags.ToJSON();
+                    TagSet mechTags = new TagSet(baseMechDef.MechTags);
+                    mechTags.Add("unit_madlabs");
+                    mechTags.Add("unit_plus");
+                    string mechTagsJson = mechTags.ToJSON();
 
                     // Fix MechDefJson
                     JObject jMechDef = JObject.Parse(mechDefJson);
-                    JObject jBaseMechDefMechTagsJson = JObject.Parse(baseMechDefMechTagsJson);
+                    JObject jBaseMechDefMechTagsJson = JObject.Parse(mechTagsJson);
 
                     jMechDef.Property("Chassis").Remove();
                     jMechDef.Property("PaintTextureID").Remove();
@@ -593,7 +665,7 @@ namespace MechLabAmendments
                     JObject jDescription = (JObject)jMechDef["Description"];
                     jDescription["Manufacturer"] = null;
                     jDescription["Model"] = null;
-                    //jDescription["UIName"] = "";
+                    jDescription["Name"] = mechDefName;
                     jDescription["Id"] = mechDefId;
 
 

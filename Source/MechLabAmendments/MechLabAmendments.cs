@@ -62,6 +62,14 @@ namespace MechLabAmendments
         {
             try
             {
+                MechLabPanel mechLabPanel = (MechLabPanel)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechLab").GetValue(__instance);
+
+                if (!mechLabPanel.IsSimGame)
+                {
+                    Logger.LogLine("[MechLabMechInfoWidget_SetData_PREFIX] This is NOT SimGame. Aborting.");
+                    return;
+                }
+
                 Logger.LogLine("[MechLabMechInfoWidget_SetData_PREFIX] Disable text validation, expand character limit");
 
                 TMP_InputField mechNickname = (TMP_InputField)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechNickname").GetValue(__instance);
@@ -86,6 +94,13 @@ namespace MechLabAmendments
             try
             {
                 MechLabPanel mechLabPanel = (MechLabPanel)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechLab").GetValue(__instance);
+
+                if (!mechLabPanel.IsSimGame)
+                {
+                    Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] This is NOT SimGame. Aborting.");
+                    return;
+                }
+
                 TMP_InputField mechNickname = (TMP_InputField)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechNickname").GetValue(__instance);
                 string mechDefaultVariant = mechLabPanel.activeMechDef.Chassis.VariantName;
                 Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] mechDefaultVariant: " + mechDefaultVariant);
@@ -110,6 +125,7 @@ namespace MechLabAmendments
 
                 string mechDefIdSuffix = "";
                 string mechDefId = "";
+                string mechDefName = mechLabPanel.activeMechDef.Chassis.Description.Name;
 
                 foreach (string command in allCommands)
                 {
@@ -136,6 +152,7 @@ namespace MechLabAmendments
                         {
                             triggerSave = true;
 
+                            mechDefName = mechDefName + " " + mechDefIdSuffix;
                             mechDefId = $"{mechLabPanel.activeMechDef.Description.Id}_{mechDefIdSuffix}";
                             Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] triggerSave: " + mechDefId);
                         }
@@ -185,7 +202,7 @@ namespace MechLabAmendments
                     GenericPopupBuilder
                         .Create("Export MechDef", "This will export current MechDef to /Mods/MechLabAmendments/MechDefs/" + mechDefId + ".json")
                         .AddButton("Cancel", null, true, null)
-                        .AddButton("Export", new Action(() => mechLabPanel.ExportCurrentMechDefToJson(mechDefId)), true, null)
+                        .AddButton("Export", new Action(() => mechLabPanel.ExportCurrentMechDefToJson(mechDefId, mechDefName)), true, null)
                         .CancelOnEscape()
                         .AddFader(new UIColorRef?(LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.PopupBackfill), 0.5f, true)
                         .SetAlwaysOnTop()
