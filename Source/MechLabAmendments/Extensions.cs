@@ -503,8 +503,6 @@ namespace MechLabAmendments
                     mechLabPanel.SetArmor(LocationPair.Value, requestedMechDef.GetLocationLoadoutDef(LocationPair.Key));
                 }
 
-
-
                 // Refresh main inventory
                 mechLabPanel.activeMechInventory = new List<MechComponentRef>(requestedMechDef.Inventory);
                 //ReflectionHelper.InvokePrivateMethode(mechLabPanel.activeMechDef, "InsertFixedEquipmentIntoInventory", null);
@@ -514,7 +512,7 @@ namespace MechLabAmendments
 
 
 
-                // Update dependent widgets
+                // Update dependent widgets (also calls CalculateCBillValue() -> CalculateSimGameWorkOrderCost() -> PruneWorkOrder())
                 mechInfoWidget.RefreshInfo();
 
                 // Mark as modified
@@ -549,6 +547,17 @@ namespace MechLabAmendments
             {
                 locationWidget.currentRearArmor = loadout.AssignedRearArmor;
             }
+
+            // Create work-order, otherwise Mech is invalid after it is actually changed
+            // Check if the values actually changed beforehand (Vanilla does actually NOT check this)
+            int armorDiff = (int)Mathf.Abs(locationWidget.currentArmor - locationWidget.originalArmor) + (int)Mathf.Abs(locationWidget.currentRearArmor - locationWidget.originalRearArmor);
+            if (armorDiff != 0)
+            {
+                WorkOrderEntry_ModifyMechArmor subEntry = locationWidget.Sim.CreateMechArmorModifyWorkOrder(mechLabPanel.activeMechDef.GUID, locationWidget.loadout.Location, armorDiff, (int)locationWidget.currentArmor, (int)locationWidget.currentRearArmor);
+                mechLabPanel.baseWorkOrder.AddSubEntry(subEntry);
+            }
+            //mechLabPanel.ValidateLoadout(false); 
+
             ReflectionHelper.InvokePrivateMethode(locationWidget, "RefreshArmor", null);
         }
 
@@ -569,6 +578,7 @@ namespace MechLabAmendments
                     Logger.LogLine("[Extensions.SetEquipment] Component: " + equipment[i].ComponentRef.ComponentDefID + " gets installed at: " + loadout.Location.ToString() + " and was fetched from (simulated): " + equipment[i].Origin);
 
                     // NOTE that creation of items (vs. simulate-grabbing the real ones from inventory) will confuse the work-order-entries
+                    // @ToDo: Try setting "copyComponentRef" to true and test somewhen
                     MechLabItemSlotElement mechLabItemSlotElement = mechLabPanel.CreateMechComponentItem(equipment[i].ComponentRef, false, loadout.Location, locationWidget, null);
                     Traverse.Create(mechLabItemSlotElement).Field("originalDropParentType").SetValue(equipment[i].Origin);
 
@@ -663,6 +673,8 @@ namespace MechLabAmendments
                     jMechDef["MechTags"] = jBaseMechDefMechTagsJson;
 
                     JObject jDescription = (JObject)jMechDef["Description"];
+                    // Raise rarity
+                    jDescription["Rarity"] = (int)(mechDef.Description.Rarity + 4);
                     jDescription["Manufacturer"] = null;
                     jDescription["Model"] = null;
                     jDescription["Name"] = mechDefName;
@@ -671,6 +683,7 @@ namespace MechLabAmendments
 
                     jMechDef.Property("ChassisID").AddAfterSelf(new JProperty("HeraldryID", null));
                     jMechDef.Property("Description").AddAfterSelf(new JProperty("simGameMechPartCost", simGameMechPartCost));
+                    jMechDef["Version"] = 1;
 
                     JArray jInventory = (JArray)jMechDef["inventory"];
                     foreach (JObject jComponent in jInventory)

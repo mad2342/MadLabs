@@ -46,7 +46,7 @@ namespace MechLabAmendments
     [HarmonyPatch(typeof(GenericPopup), "HandleEnterKeypress")]
     public static class GenericPopup_HandleEnterKeypress_Patch
     {
-        public static bool Prefix(MechLabPanel __instance)
+        public static bool Prefix(GenericPopup __instance)
         {
             Logger.LogLine("[GenericPopup_HandleEnterKeypress_PREFIX] Disable EnterKeyPress");
             return false;
@@ -164,12 +164,11 @@ namespace MechLabAmendments
                     }
                 }
 
+                // @ToDo: Try to use LoadingCurtain
+
                 if (triggerLoad)
                 {
                     GenericPopupBuilder
-                        //.Create("Apply Stock Loadout", "If you have all necessary components available this will reset current Mech to its stock loadout.")
-                        //.AddButton("Cancel", null, true, null)
-                        //.AddButton("Apply", new Action(mechLabPanel.ResetToStock), true, null)
                         .Create("Apply Loadout", "If you have all necessary components available this will apply saved loadout: " + mechDefId)
                         .AddButton("Cancel", null, true, null)
                         .AddButton("Apply", new Action(() => mechLabPanel.ApplyLoadout(mechDefId)), true, null)
