@@ -45,15 +45,18 @@ namespace MechLabAmendments
             return false;
         }
     }
+
     [HarmonyPatch(typeof(GenericPopup), "HandleEnterKeypress")]
     public static class GenericPopup_HandleEnterKeypress_Patch
     {
         public static bool Prefix(GenericPopup __instance)
         {
+            Logger.LogLine("[GenericPopup_HandleEnterKeypress_PREFIX] __instance.ParentModule.PrefabName: " + __instance.ParentModule.PrefabName);
             Logger.LogLine("[GenericPopup_HandleEnterKeypress_PREFIX] Disable EnterKeyPress");
             return false;
         }
     }
+    
 
 
 
@@ -273,10 +276,9 @@ namespace MechLabAmendments
                 string weaponStockId = def.ComponentType.ToString() + "_" + weaponDef.Type.ToString() + "_" + weaponDef.WeaponSubType.ToString() + "_0-STOCK";
                 //Logger.LogLine("[Contract_AddMechComponentToSalvage_PREFIX] (" + weaponStockId + ") is current weapons stock version");
 
-                using (MetadataDatabase metadataDatabase = new MetadataDatabase())
-                {
-                    def = ___dataManager.WeaponDefs.Get(weaponStockId);
-                }
+                // Set
+                def = ___dataManager.WeaponDefs.Get(weaponStockId);
+
                 Logger.LogLine("[Contract_AddMechComponentToSalvage_PREFIX] (" + weaponOriginalId + ") was replaced with stock version (" + def.Description.Id + ")");
 
                 return true;
@@ -369,7 +371,9 @@ namespace MechLabAmendments
                     Logger.LogLine("[LanceSpawnerGameLogic_ContractInitialize_PREFIX] unitSpawnPointGameLogic.unitExcludedTagSet: " + unitSpawnPointGameLogic.unitExcludedTagSet.ToString());
                     Logger.LogLine("[LanceSpawnerGameLogic_ContractInitialize_PREFIX] unitSpawnPointGameLogic.IsTaggedUnit: " + unitSpawnPointGameLogic.IsTaggedUnit);
                     Logger.LogLine("[LanceSpawnerGameLogic_ContractInitialize_PREFIX] unitSpawnPointGameLogic.UnitDefId: " + unitSpawnPointGameLogic.UnitDefId);
+                    Logger.LogLine("[LanceSpawnerGameLogic_ContractInitialize_PREFIX] unitSpawnPointGameLogic.pilotDefId: " + unitSpawnPointGameLogic.pilotDefId);
                     Logger.LogLine("---");
+                    
 
                     if (!unitSpawnPointGameLogic.HasUnitToSpawn || unitSpawnPointGameLogic.unitType != UnitType.Mech)
                     {
@@ -397,7 +401,11 @@ namespace MechLabAmendments
                     Logger.LogLine("[LanceSpawnerGameLogic_ContractInitialize_PREFIX] originalMechDef.MechTags: " + originalMechDef.MechTags);
 
                     // Check original MechDef
-                    if (originalMechDef.MechTags.Contains("unit_madlabs"))
+                    if (!originalMechDef.MechTags.Contains("unit_madlabs"))
+                    {
+                        continue;
+                    }
+                    else
                     {
                         CountMadlabUnitsInThisLance++;
                         Logger.LogLine("[LanceSpawnerGameLogic_ContractInitialize_PREFIX] Found a custom MadLabs unit. CountMadlabUnitsInThisLance: " + CountMadlabUnitsInThisLance);
