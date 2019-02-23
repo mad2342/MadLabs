@@ -9,6 +9,7 @@
 	"DLL": "MechLabAmendments.dll",
 
 	"Manifest": [
-		{ "Type": "MechDef", "Path": "MechDefs\\" }
+		{ "Type": "MechDef", "Path": "MechDefs\\" },
+		{ "Type": "PilotDef", "Path": "PilotDefs\\" }
     ]
 }
