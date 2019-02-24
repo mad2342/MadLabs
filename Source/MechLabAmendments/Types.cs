@@ -1,7 +1,5 @@
 ﻿using BattleTech;
 
-
-
 namespace MechLabAmendments
 {
     public class InventoryItemElement_Simple

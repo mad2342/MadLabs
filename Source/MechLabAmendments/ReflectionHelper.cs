@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Reflection;
 
-
-
 namespace MechLabAmendments
 {
     public static class ReflectionHelper

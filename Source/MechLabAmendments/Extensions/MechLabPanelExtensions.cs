@@ -3,7 +3,6 @@ using BattleTech.UI;
 using System.IO;
 using System;
 using Newtonsoft.Json.Linq;
-using fastJSON;
 using BattleTech;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,265 +11,16 @@ using TMPro;
 using HBS;
 using HBS.Collections;
 
-namespace MechLabAmendments
+namespace MechLabAmendments.Extensions
 {
-    // Add custom methods to MechLabPanel
-    public static class Extensions
+    public static class MechLabPanelExtensions
     {
-        public static bool CanApplyLoadout(this MechLabPanel mechLabPanel, MechDef mechDef, out List<string> errorDescriptions)
-        {
-            bool result = false;
-            errorDescriptions = new List<string>();
-
-            MechLabInventoryWidget inventoryWidget = (MechLabInventoryWidget)AccessTools.Field(typeof(MechLabPanel), "inventoryWidget").GetValue(mechLabPanel);
-            MechLabDismountWidget dismountWidget = (MechLabDismountWidget)AccessTools.Field(typeof(MechLabPanel), "dismountWidget").GetValue(mechLabPanel);
-
-            List<MechComponentRef> activeMechInventory = mechLabPanel.activeMechInventory;
-            MechComponentRef[] mechComponentsArray = (MechComponentRef[])AccessTools.Field(typeof(MechDef), "inventory").GetValue(mechDef);
-            List<MechComponentRef> mechComponentsRequired = mechComponentsArray.ToList();
-
-            // Remove fixed equipment as it will be ignored from dismounting et all
-            for (int i = mechComponentsRequired.Count - 1; i >= 0; i--)
-            {
-                if (mechComponentsRequired[i].IsFixed)
-                {
-                    Logger.LogLine("[Extensions.CanApplyLoadout] FOUND AND WILL REMOVE FIXED EQUIPMENT: " + mechComponentsRequired[i].ComponentDefID);
-                    mechComponentsRequired.RemoveAt(i);
-                }
-            }
-
-            // Check current inventory
-            for (int i = mechComponentsRequired.Count - 1; i >= 0; i--)
-            {
-                for (int j = activeMechInventory.Count - 1; j >= 0; j--)
-                {
-                    if (mechComponentsRequired[i].ComponentDefID == activeMechInventory[j].ComponentDefID)
-                    {
-                        mechComponentsRequired.RemoveAt(i);
-                        break;
-                    }
-                }
-            }
-            // Check dismount too (as command could also be triggered with already stripped equipment)
-            for (int i = mechComponentsRequired.Count - 1; i >= 0; i--)
-            {
-                for (int j = dismountWidget.localInventory.Count - 1; j >= 0; j--)
-                {
-                    if (mechComponentsRequired[i].ComponentDefID == dismountWidget.localInventory[j].ComponentRef.ComponentDefID)
-                    {
-                        mechComponentsRequired.RemoveAt(i);
-                        break;
-                    }
-                }
-            }
-
-            // Check storage for remaining required components
-            List<InventoryItemElement_Simple> mechItemsRequired = Utilities.ComponentsToInventoryItems(mechComponentsRequired, true);
-            List<InventoryItemElement_Simple> missingItems = new List<InventoryItemElement_Simple>();
-
-            result = mechLabPanel.ItemsAvailableInInventory(mechItemsRequired, inventoryWidget.localInventory, out missingItems);
-
-            foreach (InventoryItemElement_Simple item in missingItems)
-            {
-                Logger.LogLine("[Extensions.CanApplyLoadout] missingItems: " + item.ComponentRef.ComponentDefID + " (Quantity: " + item.Quantity + ")");
-                //errorDescriptions.Add(Environment.NewLine + "• Components missing: " + item.ComponentRef.ComponentDefID + " (Quantity: " + item.Quantity + ")");
-
-                for (int i = 0; i < item.Quantity; i++)
-                {
-                    errorDescriptions.Add("• Missing " + item.ComponentRef.Def.ComponentType + ": " + item.ComponentRef.ComponentDefID);
-                    /*
-                    errorDescriptions.Add
-                    (
-                        Environment.NewLine +
-                        "• Missing " +
-                        item.ComponentRef.Def.ComponentType +
-                        ": " +
-                        item.ComponentRef.Def.Description.Manufacturer +
-                        " " +
-                        item.ComponentRef.Def.Description.Name +
-                        " (" +
-                        item.ComponentRef.ComponentDefID +
-                        ")"
-                    );
-                    */
-                }
-            }
-
-            return result;
-        }
-
-
-
         public static void SetToStock(this MechLabPanel mechLabPanel)
         {
-            mechLabPanel.ApplyLoadout(mechLabPanel.activeMechDef.Description.Id);
+            string stockMechDefId = mechLabPanel.activeMechDef.ChassisID.Replace("chassisdef", "mechdef");
+
+            mechLabPanel.ApplyLoadout(stockMechDefId);
         }
-
-
-
-        public static bool ItemsAvailableInInventory(this MechLabPanel mechLabPanel, List<InventoryItemElement_Simple> requiredItems, List<InventoryItemElement_NotListView> requestedInventory)
-        {
-            foreach (InventoryItemElement_Simple requiredItem in requiredItems)
-            {
-                bool match = false;
-                foreach (InventoryItemElement_NotListView inventoryItem in requestedInventory)
-                {
-                    if (inventoryItem.ComponentRef.ComponentDefID == requiredItem.ComponentRef.ComponentDefID)
-                    {
-                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory: " + inventoryItem.ComponentRef.ComponentDefID + " (Quantity: " + inventoryItem.controller.quantity + ")");
-                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requiredItems: " + requiredItem.ComponentRef.ComponentDefID + " (Quantity: " + requiredItem.Quantity + ")");
-                        match = true;
-
-                        // Need to check the controller as a potential quantity change via store is NOT reflected properly in vanilla
-                        //if (inventoryItem.Quantity >= requiredItem.Quantity)
-                        if (inventoryItem.controller.quantity >= requiredItem.Quantity)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                }
-                if (!match)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-
-
-        public static bool ItemsAvailableInInventory(this MechLabPanel mechLabPanel, List<InventoryItemElement_Simple> requiredItems, List<InventoryItemElement_NotListView> requestedInventory, out List<InventoryItemElement_Simple> missingItems)
-        {
-            missingItems = new List<InventoryItemElement_Simple>();
-            bool result = true;
-
-            foreach (InventoryItemElement_Simple requiredItem in requiredItems)
-            {
-                bool match = false;
-                foreach (InventoryItemElement_NotListView inventoryItem in requestedInventory)
-                {
-                    if (inventoryItem.ComponentRef.ComponentDefID == requiredItem.ComponentRef.ComponentDefID)
-                    {
-                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory: " + inventoryItem.ComponentRef.ComponentDefID + " (Quantity: " + inventoryItem.controller.quantity + ")");
-                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requiredItems: " + requiredItem.ComponentRef.ComponentDefID + " (Quantity: " + requiredItem.Quantity + ")");
-                        match = true;
-
-                        // Need to check the controller as a potential quantity change via store is NOT reflected properly in vanilla
-                        //if (inventoryItem.Quantity >= requiredItem.Quantity)
-                        if (inventoryItem.controller.quantity >= requiredItem.Quantity)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            //return false;
-
-                            Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory is missing some: " + requiredItem.ComponentRef.ComponentDefID + " (" + (requiredItem.Quantity - inventoryItem.controller.quantity) + ")");
-
-                            InventoryItemElement_Simple missingItem = new InventoryItemElement_Simple
-                            {
-                                ComponentRef = requiredItem.ComponentRef,
-                                Quantity = requiredItem.Quantity - inventoryItem.controller.quantity
-                            };
-                            missingItems.Add(missingItem);
-
-                            result = false;
-                        }
-                    }
-                }
-                if (!match)
-                {
-                    //return false;
-
-                    Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory is missing all: " + requiredItem.ComponentRef.ComponentDefID + " ("+ requiredItem.Quantity + ")");
-
-                    InventoryItemElement_Simple missingItem = new InventoryItemElement_Simple
-                    {
-                        ComponentRef = requiredItem.ComponentRef,
-                        Quantity = requiredItem.Quantity
-                    };
-                    missingItems.Add(missingItem);
-
-                    result = false;
-                }
-            }
-            return result;
-        }
-
-
-
-        public static List<InventoryItemElement_NotListView> PullItemsFromInventory(this MechLabPanel mechLabPanel, List<InventoryItemElement_Simple> requiredItems, List<InventoryItemElement_NotListView> requestedInventory)
-        {
-            MechLabInventoryWidget inventoryWidget = (MechLabInventoryWidget)AccessTools.Field(typeof(MechLabPanel), "inventoryWidget").GetValue(mechLabPanel);
-            List<InventoryItemElement_NotListView> collectedItems = new List<InventoryItemElement_NotListView>();
-
-            // Reverse iterate to be able to directly remove without exception
-            for (int i = requestedInventory.Count - 1; i >= 0; i--)
-            {
-                foreach (InventoryItemElement_Simple requiredItem in requiredItems)
-                {
-                    if (requestedInventory[i].ComponentRef.ComponentDefID == requiredItem.ComponentRef.ComponentDefID)
-                    {
-                        //if (requestedInventory[i].Quantity >= requiredItem.Quantity)
-                        if (requestedInventory[i].controller.quantity >= requiredItem.Quantity)
-                        {
-                            for (int j = 0; j < requiredItem.Quantity; j++)
-                            {
-                                // Collect before removal just makes sense... :-)
-                                collectedItems.Add(requestedInventory[i]);
-                                inventoryWidget.RemoveItem(requestedInventory[i]);
-                            }
-                        }
-                    }
-                }
-            }
-            return collectedItems;
-        }
-
-
-
-        public static void RemoveItem(this MechLabInventoryWidget inventoryWidget, InventoryItemElement_NotListView item)
-        {
-            if (item.controller != null)
-            {
-                //Logger.LogLine("[Extensions.MechLabInventoryWidget.RemoveItem] item.controller != null");
-                if (item.controller.quantity > 1)
-                {
-                    item.controller.ModifyQuantity(-1);
-                    //Logger.LogLine("[Extensions.MechLabInventoryWidget.RemoveItem] item.controller.quantity: " + item.controller.quantity);
-                }
-                else
-                {
-                    //Logger.LogLine("[Extensions.MechLabInventoryWidget.RemoveItem] item.controller.quantity <= 1: " + item.controller.quantity);
-                    inventoryWidget.localInventory.Remove(item);
-                    item.SetRadioParent(null);
-                    item.controller.Pool();
-                    ReflectionHelper.InvokePrivateMethode(inventoryWidget, "EndOfFrameScrollBarMovement", null);
-                }
-            }
-            else if (item.Quantity > 1)
-            {
-                item.ModifyQuantity(-1);
-            }
-            else
-            {
-                inventoryWidget.localInventory.Remove(item);
-                item.SetRadioParent(null);
-                ReflectionHelper.InvokePrivateMethode(inventoryWidget, "EndOfFrameScrollBarMovement", null);
-            }
-            if (!inventoryWidget.localInventory.Contains(item))
-            {
-                //Logger.LogLine("[Extensions.MechLabInventoryWidget.RemoveItem] !inventoryWidget.localInventory.Contains(item): HIDING item");
-                item.ElementVisible = false;
-            }
-            inventoryWidget.ApplySorting(true);
-        }
-
-
 
         public static void ApplyLoadout(this MechLabPanel mechLabPanel, string mechDefId)
         {
@@ -536,7 +286,210 @@ namespace MechLabAmendments
             }
         }
 
+        public static bool CanApplyLoadout(this MechLabPanel mechLabPanel, MechDef mechDef, out List<string> errorDescriptions)
+        {
+            bool result = false;
+            errorDescriptions = new List<string>();
 
+            MechLabInventoryWidget inventoryWidget = (MechLabInventoryWidget)AccessTools.Field(typeof(MechLabPanel), "inventoryWidget").GetValue(mechLabPanel);
+            MechLabDismountWidget dismountWidget = (MechLabDismountWidget)AccessTools.Field(typeof(MechLabPanel), "dismountWidget").GetValue(mechLabPanel);
+
+            List<MechComponentRef> activeMechInventory = mechLabPanel.activeMechInventory;
+            MechComponentRef[] mechComponentsArray = (MechComponentRef[])AccessTools.Field(typeof(MechDef), "inventory").GetValue(mechDef);
+            List<MechComponentRef> mechComponentsRequired = mechComponentsArray.ToList();
+
+            // Remove fixed equipment as it will be ignored from dismounting et all
+            for (int i = mechComponentsRequired.Count - 1; i >= 0; i--)
+            {
+                if (mechComponentsRequired[i].IsFixed)
+                {
+                    Logger.LogLine("[Extensions.CanApplyLoadout] FOUND AND WILL REMOVE FIXED EQUIPMENT: " + mechComponentsRequired[i].ComponentDefID);
+                    mechComponentsRequired.RemoveAt(i);
+                }
+            }
+
+            // Check current inventory
+            for (int i = mechComponentsRequired.Count - 1; i >= 0; i--)
+            {
+                for (int j = activeMechInventory.Count - 1; j >= 0; j--)
+                {
+                    if (mechComponentsRequired[i].ComponentDefID == activeMechInventory[j].ComponentDefID)
+                    {
+                        mechComponentsRequired.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+            // Check dismount too (as command could also be triggered with already stripped equipment)
+            for (int i = mechComponentsRequired.Count - 1; i >= 0; i--)
+            {
+                for (int j = dismountWidget.localInventory.Count - 1; j >= 0; j--)
+                {
+                    if (mechComponentsRequired[i].ComponentDefID == dismountWidget.localInventory[j].ComponentRef.ComponentDefID)
+                    {
+                        mechComponentsRequired.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+
+            // Check storage for remaining required components
+            List<InventoryItemElement_Simple> mechItemsRequired = Utilities.ComponentsToInventoryItems(mechComponentsRequired, true);
+            List<InventoryItemElement_Simple> missingItems = new List<InventoryItemElement_Simple>();
+
+            result = mechLabPanel.ItemsAvailableInInventory(mechItemsRequired, inventoryWidget.localInventory, out missingItems);
+
+            foreach (InventoryItemElement_Simple item in missingItems)
+            {
+                Logger.LogLine("[Extensions.CanApplyLoadout] missingItems: " + item.ComponentRef.ComponentDefID + " (Quantity: " + item.Quantity + ")");
+                //errorDescriptions.Add(Environment.NewLine + "• Components missing: " + item.ComponentRef.ComponentDefID + " (Quantity: " + item.Quantity + ")");
+
+                for (int i = 0; i < item.Quantity; i++)
+                {
+                    errorDescriptions.Add("• Missing " + item.ComponentRef.Def.ComponentType + ": " + item.ComponentRef.ComponentDefID);
+                    /*
+                    errorDescriptions.Add
+                    (
+                        Environment.NewLine +
+                        "• Missing " +
+                        item.ComponentRef.Def.ComponentType +
+                        ": " +
+                        item.ComponentRef.Def.Description.Manufacturer +
+                        " " +
+                        item.ComponentRef.Def.Description.Name +
+                        " (" +
+                        item.ComponentRef.ComponentDefID +
+                        ")"
+                    );
+                    */
+                }
+            }
+
+            return result;
+        }
+
+        public static bool ItemsAvailableInInventory(this MechLabPanel mechLabPanel, List<InventoryItemElement_Simple> requiredItems, List<InventoryItemElement_NotListView> requestedInventory)
+        {
+            foreach (InventoryItemElement_Simple requiredItem in requiredItems)
+            {
+                bool match = false;
+                foreach (InventoryItemElement_NotListView inventoryItem in requestedInventory)
+                {
+                    if (inventoryItem.ComponentRef.ComponentDefID == requiredItem.ComponentRef.ComponentDefID)
+                    {
+                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory: " + inventoryItem.ComponentRef.ComponentDefID + " (Quantity: " + inventoryItem.controller.quantity + ")");
+                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requiredItems: " + requiredItem.ComponentRef.ComponentDefID + " (Quantity: " + requiredItem.Quantity + ")");
+                        match = true;
+
+                        // Need to check the controller as a potential quantity change via store is NOT reflected properly in vanilla
+                        //if (inventoryItem.Quantity >= requiredItem.Quantity)
+                        if (inventoryItem.controller.quantity >= requiredItem.Quantity)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                if (!match)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+
+        public static bool ItemsAvailableInInventory(this MechLabPanel mechLabPanel, List<InventoryItemElement_Simple> requiredItems, List<InventoryItemElement_NotListView> requestedInventory, out List<InventoryItemElement_Simple> missingItems)
+        {
+            missingItems = new List<InventoryItemElement_Simple>();
+            bool result = true;
+
+            foreach (InventoryItemElement_Simple requiredItem in requiredItems)
+            {
+                bool match = false;
+                foreach (InventoryItemElement_NotListView inventoryItem in requestedInventory)
+                {
+                    if (inventoryItem.ComponentRef.ComponentDefID == requiredItem.ComponentRef.ComponentDefID)
+                    {
+                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory: " + inventoryItem.ComponentRef.ComponentDefID + " (Quantity: " + inventoryItem.controller.quantity + ")");
+                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requiredItems: " + requiredItem.ComponentRef.ComponentDefID + " (Quantity: " + requiredItem.Quantity + ")");
+                        match = true;
+
+                        // Need to check the controller as a potential quantity change via store is NOT reflected properly in vanilla
+                        //if (inventoryItem.Quantity >= requiredItem.Quantity)
+                        if (inventoryItem.controller.quantity >= requiredItem.Quantity)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            //return false;
+
+                            Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory is missing some: " + requiredItem.ComponentRef.ComponentDefID + " (" + (requiredItem.Quantity - inventoryItem.controller.quantity) + ")");
+
+                            InventoryItemElement_Simple missingItem = new InventoryItemElement_Simple
+                            {
+                                ComponentRef = requiredItem.ComponentRef,
+                                Quantity = requiredItem.Quantity - inventoryItem.controller.quantity
+                            };
+                            missingItems.Add(missingItem);
+
+                            result = false;
+                        }
+                    }
+                }
+                if (!match)
+                {
+                    //return false;
+
+                    Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory is missing all: " + requiredItem.ComponentRef.ComponentDefID + " (" + requiredItem.Quantity + ")");
+
+                    InventoryItemElement_Simple missingItem = new InventoryItemElement_Simple
+                    {
+                        ComponentRef = requiredItem.ComponentRef,
+                        Quantity = requiredItem.Quantity
+                    };
+                    missingItems.Add(missingItem);
+
+                    result = false;
+                }
+            }
+            return result;
+        }
+
+
+
+        public static List<InventoryItemElement_NotListView> PullItemsFromInventory(this MechLabPanel mechLabPanel, List<InventoryItemElement_Simple> requiredItems, List<InventoryItemElement_NotListView> requestedInventory)
+        {
+            MechLabInventoryWidget inventoryWidget = (MechLabInventoryWidget)AccessTools.Field(typeof(MechLabPanel), "inventoryWidget").GetValue(mechLabPanel);
+            List<InventoryItemElement_NotListView> collectedItems = new List<InventoryItemElement_NotListView>();
+
+            // Reverse iterate to be able to directly remove without exception
+            for (int i = requestedInventory.Count - 1; i >= 0; i--)
+            {
+                foreach (InventoryItemElement_Simple requiredItem in requiredItems)
+                {
+                    if (requestedInventory[i].ComponentRef.ComponentDefID == requiredItem.ComponentRef.ComponentDefID)
+                    {
+                        //if (requestedInventory[i].Quantity >= requiredItem.Quantity)
+                        if (requestedInventory[i].controller.quantity >= requiredItem.Quantity)
+                        {
+                            for (int j = 0; j < requiredItem.Quantity; j++)
+                            {
+                                // Collect before removal just makes sense... :-)
+                                collectedItems.Add(requestedInventory[i]);
+                                inventoryWidget.RemoveItem(requestedInventory[i]);
+                            }
+                        }
+                    }
+                }
+            }
+            return collectedItems;
+        }
 
         public static void SetArmor(this MechLabPanel mechLabPanel, MechLabLocationWidget locationWidget, LocationLoadoutDef loadout)
         {
@@ -622,7 +575,7 @@ namespace MechLabAmendments
 
                 // Remove fixed equipment as it will be ignored from dismounting et all
                 MechComponentRef[] mechDefInventoryFiltered = mechDefInventory.Where(component => component.IsFixed != true).ToArray();
-                
+
                 // CHECK
                 foreach (MechComponentRef component in mechDefInventoryFiltered)
                 {
@@ -703,54 +656,6 @@ namespace MechLabAmendments
             {
                 Logger.LogError(e);
             }
-        }
-
-
-        public static void Trashcan()
-        {
-            /* BEN: Simulate Drag&Drop: NOT WORKING properly
-            
-            // Iterate over baseMechComponents/itemsCollectedFromDismount, check matching Id AND mounted location from baseMechComponentItem
-            // Simulate grab of matching item and call OnMechLabDrop on the correct LocationWidget
-
-            // Refill List
-            baseMechComponentsRequired = baseMechComponentsArray.ToList();
-
-            for (int h = itemsCollectedFromDismount.Count - 1; h >= 0; h--)
-            {
-                MechLabItemSlotElement item = itemsCollectedFromDismount[h];
-
-                for (int i = baseMechComponentsRequired.Count - 1; i >= 0; i--)
-                {
-                    if (item.ComponentRef.ComponentDefID == baseMechComponentsRequired[i].ComponentDefID)
-                    {
-                        ChassisLocations mountedLocation = baseMechComponentsRequired[i].MountedLocation;
-
-                        if (LocationHandler.TryGetValue(mountedLocation, out MechLabLocationWidget widget))
-                        {
-                            Logger.LogLine("[Extensions.ResetToStock] Try to place: " + item.ComponentRef.ComponentDefID + " at " + mountedLocation);
-                            dismountWidget.OnItemGrab(item, null);
-                            // Info
-
-                            mechLabPanel.DragItem.DropParent = dismountWidget;
-                            mechLabPanel.DragItem.HandledDrop = false;
-                            mechLabPanel.DragItem.MountedLocation = ChassisLocations.None;
-
-                            Logger.LogLine("[Extensions.ResetToStock] mechLabPanel.DragItem.ComponentRef.ComponentDefID: " + mechLabPanel.DragItem.ComponentRef.ComponentDefID);
-                            Logger.LogLine("[Extensions.ResetToStock] mechLabPanel.DragItem.DropParent: " + mechLabPanel.DragItem.DropParent);
-                            Logger.LogLine("[Extensions.ResetToStock] mechLabPanel.DragItem.MountedLocation: " + mechLabPanel.DragItem.MountedLocation);
-                            Logger.LogLine("[Extensions.ResetToStock] mechLabPanel.DragItem.OriginalDropParentType: " + mechLabPanel.DragItem.OriginalDropParentType);
-                            Logger.LogLine("[Extensions.ResetToStock] mechLabPanel.DragItem.ItemType: " + mechLabPanel.DragItem.ItemType);
-                            Logger.LogLine("[Extensions.ResetToStock] mechLabPanel.DragItem.HandledDrop: " + mechLabPanel.DragItem.HandledDrop);
-
-                            widget.OnMechLabDrop(null, MechLabDropTargetType.NOT_SET);
-                        }
-                        baseMechComponentsRequired.RemoveAt(i);
-                        break;
-                    }
-                }
-            }
-            */
         }
     }
 }
