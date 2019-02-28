@@ -546,6 +546,7 @@ namespace MechLabAmendments.Extensions
                         mechLabItemSlotElement.gameObject.transform.localScale = Vector3.one;
 
                         ReflectionHelper.InvokePrivateMethode(locationWidget, "RefreshMechComponentData", new object[] { mechLabItemSlotElement, false });
+                        locationWidget.RefreshHardpointData();
 
                         // Add WorkOrderEntry 
                         WorkOrderEntry_InstallComponent subEntry = locationWidget.Sim.CreateComponentInstallWorkOrder(mechLabPanel.baseWorkOrder.MechID, equipment[i].ComponentRef, loadout.Location, ChassisLocations.None);
@@ -553,7 +554,6 @@ namespace MechLabAmendments.Extensions
                     }
                 }
             }
-            locationWidget.RefreshHardpointData();
             //mechLabPanel.ValidateLoadout(false);
         }
 
@@ -567,23 +567,28 @@ namespace MechLabAmendments.Extensions
                 MechDef baseMechDef = new MechDef(mechLabPanel.Sim.DataManager.MechDefs.Get(mechDef.Description.Id), null, false);
                 MechComponentRef[] mechDefInventory = (MechComponentRef[])AccessTools.Field(typeof(MechDef), "inventory").GetValue(mechDef);
 
-                // CHECK
-                foreach (MechComponentRef component in mechDefInventory)
-                {
-                    Logger.LogLine("[Extensions.ExportCurrentMechDefToJson] mechDefInventory: " + component.ComponentDefID + ", isFixed: " + component.IsFixed);
-                }
-
                 // Remove fixed equipment as it will be ignored from dismounting et all
                 MechComponentRef[] mechDefInventoryFiltered = mechDefInventory.Where(component => component.IsFixed != true).ToArray();
-
-                // CHECK
-                foreach (MechComponentRef component in mechDefInventoryFiltered)
-                {
-                    Logger.LogLine("[Extensions.ExportCurrentMechDefToJson] mechDefInventoryFiltered: " + component.ComponentDefID + ", isFixed: " + component.IsFixed);
-                }
                 AccessTools.Field(typeof(MechDef), "inventory").SetValue(mechDef, mechDefInventoryFiltered);
 
+                // Try to fix HardpointSlots the hard way
+                foreach (ChassisLocations chassisLocation in Enum.GetValues(typeof(ChassisLocations)))
+                {
+                    MechComponentRef[] mechDefWeaponsAtLocation = mechDefInventory
+                    .Where(component => component.MountedLocation == chassisLocation)
+                    .Where(component => component.ComponentDefType == ComponentType.Weapon)
+                    .ToArray();
 
+                    for (int i = 0; i < mechDefWeaponsAtLocation.Length; i++)
+                    {
+                        new Traverse(mechDefWeaponsAtLocation[i]).Property("HardpointSlot").SetValue(i);
+                        Logger.LogLine("[Extensions.ExportCurrentMechDefToJson] (" + chassisLocation + ") (" + mechDefWeaponsAtLocation[i].ComponentDefID + ") HardpointSlot: " + mechDefWeaponsAtLocation[i].HardpointSlot);
+                    }
+                }
+
+                // Tag MechDef according to equipment
+                string additionalTag = Utilities.TagMechDefAccordingToInventory(mechDefInventory);
+                Logger.LogLine("[Extensions.ExportCurrentMechDefToJson] additionalTag: " + additionalTag);
 
                 // Set some halfway correct value for part value
                 int simGameMechPartCost = mechDef.SimGameMechPartCost > 0 ? mechDef.SimGameMechPartCost : (mechDef.BattleValue / 10);
@@ -592,7 +597,8 @@ namespace MechLabAmendments.Extensions
                 string filePath = Path.Combine(Path.Combine(baseDirectory, "MechDefs"), $"{mechDefId}.json");
                 Directory.CreateDirectory(Directory.GetParent(filePath).FullName);
 
-                // Remove append-flag at some point
+
+
                 using (StreamWriter writer = new StreamWriter(filePath, false))
                 {
                     /*
@@ -610,7 +616,7 @@ namespace MechLabAmendments.Extensions
                     string mechDefJson = mechDef.ToJSON();
                     TagSet mechTags = new TagSet(baseMechDef.MechTags);
                     mechTags.Add("unit_madlabs");
-                    mechTags.Add("unit_plus");
+                    mechTags.Add(additionalTag);
                     string mechTagsJson = mechTags.ToJSON();
 
                     // Fix MechDefJson
@@ -626,8 +632,9 @@ namespace MechLabAmendments.Extensions
                     jMechDef["MechTags"] = jBaseMechDefMechTagsJson;
 
                     JObject jDescription = (JObject)jMechDef["Description"];
-                    // Raise rarity
+                    // Raise rarity?
                     jDescription["Rarity"] = (int)(mechDef.Description.Rarity + 4);
+
                     jDescription["Manufacturer"] = null;
                     jDescription["Model"] = null;
                     jDescription["Name"] = mechDefName;
