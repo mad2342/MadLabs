@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BattleTech;
 using Harmony;
 using HBS.Collections;
@@ -7,12 +9,64 @@ namespace MechLabAmendments
 {
     class Utilities
     {
+        public static string TagMechDefAccordingToInventory(MechComponentRef[] mechDefInventory)
+        {
+            string result = "unit_components_neutral";
+
+            int weaponCount = mechDefInventory.Where(component => component.ComponentDefType == ComponentType.Weapon).ToArray().Length;
+            int upgradeCount = mechDefInventory.Where(component => component.ComponentDefType == ComponentType.Upgrade).ToArray().Length;
+            int componentCount = weaponCount + upgradeCount;
+
+            int componentCountVariant = mechDefInventory.Where(component => component.Def.ComponentTags.Contains("component_type_variant")).ToArray().Length;
+            int componentCountVariant1 = mechDefInventory.Where(component => component.Def.ComponentTags.Contains("component_type_variant1")).ToArray().Length;
+            int componentCountVariant2 = mechDefInventory.Where(component => component.Def.ComponentTags.Contains("component_type_variant2")).ToArray().Length;
+            int componentCountVariant3 = mechDefInventory.Where(component => component.Def.ComponentTags.Contains("component_type_variant3")).ToArray().Length;
+
+            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentCount: " + componentCount);
+            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentCountVariant: " + componentCountVariant);
+            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentCountVariant1: " + componentCountVariant1);
+            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentCountVariant2: " + componentCountVariant2);
+            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentCountVariant3: " + componentCountVariant3);
+
+            // Thread ranges
+            Range<int> plusRange = new Range<int>(componentCount, (int)(componentCount * 1.5));
+            Range<int> plus1Range = new Range<int>((int)(componentCount * 1.5 + 1), (int)(componentCount * 2.5));
+            Range<int> plus2Range = new Range<int>((int)(componentCount * 2.5 + 1), (int)(componentCount * 3.5));
+            Range<int> plus3Range = new Range<int>((int)(componentCount * 3.5 + 1), (int)(componentCount * 4));
+
+            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] plusRange: " + plusRange);
+            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] plus1Range: " + plus1Range);
+            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] plus2Range: " + plus2Range);
+            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] plus3Range: " + plus3Range);
+
+            // Simple thread classification: Stock gives 1 point, every Plus adds another
+            int componentClassification = (componentCount - componentCountVariant) + (componentCountVariant1 * 2) + (componentCountVariant2 * 3) + (componentCountVariant3 * 4);
+            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentClassification: " + componentClassification);
+
+            if (plus1Range.ContainsValue(componentClassification))
+            {
+                result = "unit_components_plus";
+            }
+            else if (plus2Range.ContainsValue(componentClassification))
+            {
+                result = "unit_components_plusplus";
+            }
+            else if (plus3Range.ContainsValue(componentClassification))
+            {
+                result = "unit_components_plusplusplus";
+            }
+
+            return result;
+        }
+
+
+
         public static string GetPilotIdForMechDef(MechDef mechDef)
         {
             string pilotId = "pilot_madlabs_lancer";
-            // return "pilot_madlabs_lancer"
             TagSet MechTags = mechDef.MechTags;
             List<string> appropiatePilots = new List<string>();
+
             if (!MechTags.IsEmpty)
             {
                 string[] MechTagsItems = (string[])AccessTools.Field(typeof(TagSet), "items").GetValue(MechTags);
@@ -80,7 +134,7 @@ namespace MechLabAmendments
 
             foreach (string Id in appropiatePilots)
             {
-                Logger.LogLine("[Utilities.GetPilotIdForMechDef] appropiatePilot: " + Id);
+                Logger.LogLine("[Utilities.GetPilotIdForMechDef] appropiatePilots: " + Id);
             }
             appropiatePilots.Shuffle<string>();
             pilotId = appropiatePilots[0];
@@ -88,6 +142,8 @@ namespace MechLabAmendments
 
             return pilotId;
         }
+
+
 
         public static List<InventoryItemElement_Simple> ComponentsToInventoryItems(List<MechComponentRef> mechComponents, bool log = false)
         {
