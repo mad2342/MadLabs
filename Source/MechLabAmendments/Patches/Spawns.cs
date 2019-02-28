@@ -16,6 +16,17 @@ namespace MechLabAmendments.Patches
             try
             {
                 Logger.LogLine("----------------------------------------------------------------------------------------------------");
+                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.IsUnitDefTagged: " + __instance.IsUnitDefTagged);
+                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.IsPilotDefTagged: " + __instance.IsPilotDefTagged);
+
+                // If we encounter untagged (thus manually defined in the contracts json) units we don't touch them
+                if (!__instance.IsUnitDefTagged || !__instance.IsPilotDefTagged)
+                {
+                    return;
+                }
+
+
+
                 Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] lanceName: " + lanceName);
                 bool IsNewLance = Fields.CurrentLanceName != lanceName;
 
