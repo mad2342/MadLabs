@@ -4,38 +4,81 @@ using BattleTech;
 using BattleTech.Data;
 using HBS.Collections;
 using BattleTech.Framework;
+using System.Collections.Generic;
+using HBS.Data;
+using System.Linq;
 
 namespace MechLabAmendments.Patches
 {
-    // Try to influence unit spawns
+    // Get some Contract/Progression information
+    [HarmonyPatch(typeof(Contract), "Begin")]
+    public static class Contract_Begin_Patch
+    {
+        public static void Prefix(Contract __instance)
+        {
+            try
+            {
+                SimGameState simGameState = __instance.BattleTechGame.Simulation;
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.CompanyTags: " + simGameState.CompanyTags);
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.DaysPassed: " + simGameState.DaysPassed);
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.GlobalDifficulty: " + simGameState.GlobalDifficulty);
+
+                Fields.MaxAllowedExtraThreatLevelByProgression = Utilities.GetMaxAllowedExtraThreatLevelByProgression(simGameState.DaysPassed, simGameState.CompanyTags);
+                Fields.MaxAllowedMadlabsUnitsPerLance = Utilities.GetMaxAllowedMadlabsUnitsByProgression(simGameState.GlobalDifficulty);
+                Logger.LogLine("[Contract_Begin_PREFIX] Fields.MaxAllowedExtraThreatLevelByProgression: " + Fields.MaxAllowedExtraThreatLevelByProgression);
+                Logger.LogLine("[Contract_Begin_PREFIX] Fields.MaxAllowedMadlabsUnitsPerLance: " + Fields.MaxAllowedMadlabsUnitsPerLance);
+
+                /*
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.CompanyTags: " + simGameState.CompanyTags);
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.DaysPassed: " + simGameState.DaysPassed);
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.GlobalDifficulty: " + simGameState.GlobalDifficulty);
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.GetCurrentMechCount(): " + simGameState.GetCurrentMechCount(false));
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.IsCampaign: " + simGameState.IsCampaign);
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.isCareerMode(): " + simGameState.IsCareerMode());
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.TargetSystem.Name: " + simGameState.TargetSystem.Name);
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.TargetSystem.Stats: " + simGameState.TargetSystem.Stats);
+                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.TargetSystem.Tags: " + simGameState.TargetSystem.Tags);
+
+                Logger.LogLine("[Contract_Begin_PREFIX] contract.Name: " + __instance.Name);
+                Logger.LogLine("[Contract_Begin_PREFIX] contract.Difficulty: " + __instance.Difficulty);
+                Logger.LogLine("[Contract_Begin_PREFIX] contract.IsStoryContract: " + __instance.IsStoryContract);
+                */
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+            }
+        }
+    }
+
+
+    // Mess around with unit spawns
     [HarmonyPatch(typeof(UnitSpawnPointOverride), "GenerateUnit")]
     public static class UnitSpawnPointOverride_GenerateUnit_Patch
     {
-        public static void Postfix(UnitSpawnPointOverride __instance, string lanceName, DataManager ___dataManager)
+        public static void Postfix(UnitSpawnPointOverride __instance, DataManager ___dataManager, string lanceName)
         {
             try
             {
                 Logger.LogLine("----------------------------------------------------------------------------------------------------");
-                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.IsUnitDefTagged: " + __instance.IsUnitDefTagged);
-                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.IsPilotDefTagged: " + __instance.IsPilotDefTagged);
+                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] lanceName: " + lanceName);
 
-                // If we encounter untagged (thus manually defined in the contracts json) units we don't touch them
+                // If we encounter untagged (players lance or manually defined in the contracts json) units we don't touch them
                 if (!__instance.IsUnitDefTagged || !__instance.IsPilotDefTagged)
                 {
+                    Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.IsUnitDefTagged: " + __instance.IsUnitDefTagged);
+                    Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.IsPilotDefTagged: " + __instance.IsPilotDefTagged);
+                    Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Unit or Pilot was specified exactly via configuration. Aborting.");
                     return;
                 }
 
-
-
-                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] lanceName: " + lanceName);
-                bool IsNewLance = Fields.CurrentLanceName != lanceName;
-
-                if (IsNewLance)
+                if (Fields.CurrentLanceName != lanceName)
                 {
                     Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] This is a new Lance, resetting Fields.CurrentLanceMadlabUnitCount");
                     Fields.CurrentLanceName = lanceName;
-                    Fields.CurrentLanceMadlabUnitCount = 0;
+                    Fields.CurrentLanceMadlabsUnitCount = 0;
                 }
+
 
 
                 /*
@@ -50,6 +93,8 @@ namespace MechLabAmendments.Patches
                 }
                 */
 
+
+
                 Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] ---");
                 Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.selectedUnitDefId: " + __instance.selectedUnitDefId);
                 Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.selectedUnitType: " + __instance.selectedUnitType);
@@ -61,13 +106,14 @@ namespace MechLabAmendments.Patches
                     string selectedMechDefId = __instance.selectedUnitDefId;
                     MechDef selectedMechDef = null;
                     string stockMechDefId = "";
+                    string replacementMechDefId = "";
 
                     if (!___dataManager.MechDefs.TryGet(selectedMechDefId, out selectedMechDef))
                     {
-                        Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Request for MechDef of selectedMechDefId(" + selectedMechDefId + ") failed. Aborting...");
+                        Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] selectedMechDefId(" + selectedMechDefId + ") couldn't get fetched. Aborting...");
                         return;
                     }
-                    Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Request for MechDef of selectedMechDefId(" + selectedMechDefId + ") succeeded. Continuing...");
+                    Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] selectedMechDefId(" + selectedMechDefId + ") successfully requested. Continuing...");
 
                     if (selectedMechDef.MechTags.Contains("unit_madlabs"))
                     {
@@ -76,12 +122,66 @@ namespace MechLabAmendments.Patches
                         // Prepare load requests
                         LoadRequest loadRequest = ___dataManager.CreateLoadRequest(null, false);
 
-                        //Count
-                        Fields.CurrentLanceMadlabUnitCount++;
 
-                        if (Fields.CurrentLanceMadlabUnitCount <= Fields.MaxLanceMadlabUnitCount)
+
+                        Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Fields.MaxAllowedMadlabsUnitsPerLance: " + Fields.MaxAllowedMadlabsUnitsPerLance);
+                        if (Fields.CurrentLanceMadlabsUnitCount < Fields.MaxAllowedMadlabsUnitsPerLance)
                         {
-                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Only " + (Fields.CurrentLanceMadlabUnitCount - 1) + " custom MadLabs units in this Lance. Letting it pass and putting an elite pilot in.");
+                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] " + Fields.CurrentLanceMadlabsUnitCount + "/" + Fields.MaxAllowedMadlabsUnitsPerLance + " MadLabs Units in this Lance. Will get an Madlabs Pilot.");
+
+
+
+                            // Get ThreatLevel
+                            int selectedMechsExtraThreatLevel = Utilities.GetExtraThreatLevelFromMechDef(selectedMechDef);
+                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] selectedMechDefId(" + selectedMechDefId + ") has extraThreatLevel: " + selectedMechsExtraThreatLevel);
+
+                            // If selected Mech has a threatlevel too big for current game progression, select same chassis with lower threat rating
+                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Fields.MaxAllowedExtraThreatLevelByProgression: " + Fields.MaxAllowedExtraThreatLevelByProgression);
+                            if (selectedMechsExtraThreatLevel > Fields.MaxAllowedExtraThreatLevelByProgression)
+                            {
+                                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Normalizing threatlevel");
+                                string mechTagForThreatLevel = Utilities.GetMechTagForThreatLevel(Fields.MaxAllowedExtraThreatLevelByProgression);
+                                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] mechTagForThreatLevel: " + mechTagForThreatLevel);
+                                List<MechDef> allMechDefs = new List<MechDef>();
+                                foreach (string key in ___dataManager.MechDefs.Keys)
+                                {
+                                    MechDef mechDef = ___dataManager.MechDefs.Get(key);
+                                    allMechDefs.Add(mechDef);
+                                }
+                                List<string> mechDefIdsBasedOnSameChassis = allMechDefs
+                                    .Where(mechDef => mechDef.ChassisID == selectedMechDef.ChassisID)
+                                    .Where(mechDef => mechDef.MechTags.Contains(mechTagForThreatLevel))
+                                    .Select(mechDef => mechDef.Description.Id)
+                                    .ToList();
+
+                                foreach (string Id in mechDefIdsBasedOnSameChassis)
+                                {
+                                    Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] mechDefIdsBasedOnSameChassis("+ selectedMechDef.ChassisID + "): " + Id);
+                                }
+                                
+
+                                if (mechDefIdsBasedOnSameChassis.Count > 0)
+                                {
+                                    mechDefIdsBasedOnSameChassis.Shuffle<string>();
+                                    replacementMechDefId = mechDefIdsBasedOnSameChassis[0];
+                                    Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] replacementMechDefId: " + replacementMechDefId);
+
+                                    // Replace
+                                    __instance.selectedUnitDefId = replacementMechDefId;
+
+                                    // Add to load request
+                                    loadRequest.AddBlindLoadRequest(BattleTechResourceType.MechDef, __instance.selectedUnitDefId, new bool?(false));
+                                }
+                                else
+                                {
+                                    Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Couldn't find a replacement, falling back to stock. Will still get an Madlabs Pilot.");
+                                    // Fall back to stock
+                                    stockMechDefId = selectedMechDef.ChassisID.Replace("chassisdef", "mechdef");
+                                    __instance.selectedUnitDefId = stockMechDefId;
+                                }
+                            }
+
+
 
                             // Try to put another pilot in
                             __instance.selectedPilotDefId = Utilities.GetPilotIdForMechDef(selectedMechDef);
@@ -91,7 +191,7 @@ namespace MechLabAmendments.Patches
                         }
                         else
                         {
-                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Already " + Fields.MaxLanceMadlabUnitCount + " custom MadLabs units in this Lance. Resetting selectedMechDefId(" + selectedMechDefId + ") to its stock variant.");
+                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] " + Fields.CurrentLanceMadlabsUnitCount + "/" + Fields.MaxAllowedMadlabsUnitsPerLance + "  MadLabs Units in this Lance. Resetting selectedMechDefId(" + selectedMechDefId + ") to its stock variant.");
 
                             // Replace with stock
                             stockMechDefId = selectedMechDef.ChassisID.Replace("chassisdef", "mechdef");
@@ -101,15 +201,22 @@ namespace MechLabAmendments.Patches
                             loadRequest.AddBlindLoadRequest(BattleTechResourceType.MechDef, __instance.selectedUnitDefId, new bool?(false));
                         }
 
+                        // Count
+                        Fields.CurrentLanceMadlabsUnitCount++;
+
                         // Fire load requests
                         loadRequest.ProcessRequests(1000u);
+                    }
+                    else
+                    {
+                        Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] selectedMechDefId(" + selectedMechDefId + ") is NOT a custom MadLabs unit. Let it pass unchanged.");
                     }
                 }
 
                 Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] ---");
-                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.selectedUnitDefId: " + __instance.selectedUnitDefId);
-                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.selectedUnitType: " + __instance.selectedUnitType);
-                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] UnitSpawnPointOverride.selectedPilotDefId: " + __instance.selectedPilotDefId);
+                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] CHECK UnitSpawnPointOverride.selectedUnitDefId: " + __instance.selectedUnitDefId);
+                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] CHECK UnitSpawnPointOverride.selectedUnitType: " + __instance.selectedUnitType);
+                Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] CHECK UnitSpawnPointOverride.selectedPilotDefId: " + __instance.selectedPilotDefId);
                 Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] ---");
             }
             catch (Exception e)

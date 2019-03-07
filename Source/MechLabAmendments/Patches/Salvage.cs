@@ -47,7 +47,11 @@ namespace MechLabAmendments.Patches
                 int contractDifficulty = __instance.Override.finalDifficulty;
                 // Borrowed from Contract.AddWeaponToSalvage()
                 float keepInitialRareWeaponChance = ((float)contractDifficulty + simGameConstants.Salvage.VeryRareWeaponChance) / simGameConstants.Salvage.WeaponChanceDivisor;
+                
+                // Leave a minimum chance
+                keepInitialRareWeaponChance = keepInitialRareWeaponChance < Fields.KeepInitialRareWeaponChanceMin ? Fields.KeepInitialRareWeaponChanceMin : keepInitialRareWeaponChance;
                 Logger.LogLine("[Contract_AddMechComponentToSalvage_PREFIX] keepInitialRareWeaponChance: " + keepInitialRareWeaponChance);
+
                 float keepInitialRareWeaponRoll = simGameState.NetworkRandom.Float(0f, 1f);
                 bool keepInitialRareWeapon = keepInitialRareWeaponRoll < keepInitialRareWeaponChance;
 

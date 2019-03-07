@@ -186,6 +186,26 @@ namespace MechLabAmendments.Patches
         }
     }
 
+    [HarmonyPatch(typeof(MechLabPanel), "ExitMechLab")]
+    public static class MechLabPanel_ExitMechLab_Patch
+    {
+        public static void Postfix(MechLabPanel __instance)
+        {
+            Fields.IsMechLabActive = false;
+            Logger.LogLine("[MechLabPanel_ExitMechLab_POSTFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
+        }
+    }
+
+    [HarmonyPatch(typeof(MechLabPanel), "OnRequestResourcesComplete")]
+    public static class MechLabPanel_OnRequestResourcesComplete_Patch
+    {
+        public static void Postfix(MechLabPanel __instance)
+        {
+            Fields.IsMechLabActive = true;
+            Logger.LogLine("[MechLabPanel_OnRequestResourcesComplete_POSTFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
+        }
+    }
+
 
     // @ToDo: Limit this to only concern generic popups triggered by my patches
     [HarmonyPatch(typeof(GenericPopup), "HandleEnterKeypress")]
@@ -193,9 +213,14 @@ namespace MechLabAmendments.Patches
     {
         public static bool Prefix(GenericPopup __instance)
         {
-            Logger.LogLine("[GenericPopup_HandleEnterKeypress_PREFIX] __instance.ParentModule.PrefabName: " + __instance.ParentModule.PrefabName);
-            Logger.LogLine("[GenericPopup_HandleEnterKeypress_PREFIX] Disable EnterKeyPress");
-            return false;
+            Logger.LogLine("[GenericPopup_HandleEnterKeypress_PREFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
+            
+            if (Fields.IsMechLabActive)
+            {
+                Logger.LogLine("[GenericPopup_HandleEnterKeypress_PREFIX] Disable EnterKeyPress");
+                return false;
+            }
+            return true;
         }
     }
 }

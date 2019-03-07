@@ -10,6 +10,7 @@ using UnityEngine;
 using TMPro;
 using HBS;
 using HBS.Collections;
+using Newtonsoft.Json;
 
 namespace MechLabAmendments.Extensions
 {
@@ -571,10 +572,10 @@ namespace MechLabAmendments.Extensions
                 MechComponentRef[] mechDefInventoryFiltered = mechDefInventory.Where(component => component.IsFixed != true).ToArray();
                 AccessTools.Field(typeof(MechDef), "inventory").SetValue(mechDef, mechDefInventoryFiltered);
 
-                // Try to fix HardpointSlots the hard way
+                // Try to fix HardpointSlots the KISS way
                 foreach (ChassisLocations chassisLocation in Enum.GetValues(typeof(ChassisLocations)))
                 {
-                    MechComponentRef[] mechDefWeaponsAtLocation = mechDefInventory
+                    MechComponentRef[] mechDefWeaponsAtLocation = mechDefInventoryFiltered
                     .Where(component => component.MountedLocation == chassisLocation)
                     .Where(component => component.ComponentDefType == ComponentType.Weapon)
                     .ToArray();
@@ -586,8 +587,12 @@ namespace MechLabAmendments.Extensions
                     }
                 }
 
-                // Tag MechDef according to equipment
-                string additionalTag = Utilities.TagMechDefAccordingToInventory(mechDefInventory);
+                // Tag MechDef according to threatLevel/equipment
+                //string additionalTag = Utilities.TagMechDefAccordingToInventory(mechDefInventory);
+                int threatLevel = Utilities.GetExtraThreatLevelFromMechDef(mechDef, true);
+                string additionalTag = Utilities.GetMechTagAccordingToExtraThreatlevel(threatLevel);
+
+
                 Logger.LogLine("[Extensions.ExportCurrentMechDefToJson] additionalTag: " + additionalTag);
 
                 // Set some halfway correct value for part value
@@ -599,20 +604,9 @@ namespace MechLabAmendments.Extensions
 
 
 
-                using (StreamWriter writer = new StreamWriter(filePath, false))
+                using (StreamWriter streamWriter = new StreamWriter(filePath, false))
+                //using (JsonTextWriter jsonTextWriter = new JsonTextWriter(streamWriter) { Formatting = Formatting.Indented, Indentation = 4, IndentChar = ' ' })
                 {
-                    /*
-                    var p = new JSONParameters
-                    {
-                        EnableAnonymousTypes = true,
-                        SerializeToLowerCaseNames = false,
-                        UseFastGuid = false,
-                        KVStyleStringDictionary = false,
-                        SerializeNullValues = false
-                    };
-                    string json = JSON.ToNiceJSON(mechDef, p);
-                    */
-
                     string mechDefJson = mechDef.ToJSON();
                     TagSet mechTags = new TagSet(baseMechDef.MechTags);
                     mechTags.Add("unit_madlabs");
@@ -656,7 +650,8 @@ namespace MechLabAmendments.Extensions
 
 
 
-                    writer.Write(jMechDef.ToString());
+                    streamWriter.Write(jMechDef.ToString());
+                    //jMechDef.WriteTo(jsonTextWriter);
                 }
             }
             catch (Exception e)
