@@ -1,0 +1,354 @@
+{
+  "MechTags": {
+    "items": [
+      "unit_release",
+      "unit_mech",
+      "unit_medium",
+      "unit_ready",
+      "unit_lance_tank",
+      "unit_role_brawler",
+      "unit_madlabs",
+      "unit_components_plusplus"
+    ],
+    "tagSetSourceFile": ""
+  },
+  "ChassisID": "chassisdef_hunchback_HBK-4P",
+  "HeraldryID": null,
+  "Description": {
+    "Cost": 6380000,
+    "Rarity": 6,
+    "Purchasable": false,
+    "Manufacturer": null,
+    "Model": null,
+    "UIName": "Hunchback HBK-4P",
+    "Id": "mechdef_hunchback_HBK-4P_PP",
+    "Name": "Hunchback PP",
+    "Details": "The 4P version of the Hunchback trades the singular impact of a massive Autocannon for a frightening array of lighter Energy weaponry that is actually capable of dealing more damage overall. This all comes at the cost of greatly increased heat buildup, of course.",
+    "Icon": "uixTxrIcon_hunchback"
+  },
+  "simGameMechPartCost": 638000,
+  "RequiredToSpawnCompanyTags": {
+    "items": [],
+    "tagSetSourceFile": ""
+  },
+  "MinAppearanceDate": null,
+  "Version": 1,
+  "Locations": [
+    {
+      "DamageLevel": "Functional",
+      "Location": "Head",
+      "CurrentArmor": 45,
+      "CurrentRearArmor": 0,
+      "CurrentInternalStructure": 16,
+      "AssignedArmor": 45,
+      "AssignedRearArmor": 0
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "CenterTorso",
+      "CurrentArmor": 130,
+      "CurrentRearArmor": 25,
+      "CurrentInternalStructure": 80,
+      "AssignedArmor": 130,
+      "AssignedRearArmor": 25
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "LeftTorso",
+      "CurrentArmor": 100,
+      "CurrentRearArmor": 20,
+      "CurrentInternalStructure": 60,
+      "AssignedArmor": 100,
+      "AssignedRearArmor": 20
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "RightTorso",
+      "CurrentArmor": 100,
+      "CurrentRearArmor": 20,
+      "CurrentInternalStructure": 60,
+      "AssignedArmor": 100,
+      "AssignedRearArmor": 20
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "LeftArm",
+      "CurrentArmor": 80,
+      "CurrentRearArmor": 0,
+      "CurrentInternalStructure": 40,
+      "AssignedArmor": 80,
+      "AssignedRearArmor": 0
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "RightArm",
+      "CurrentArmor": 80,
+      "CurrentRearArmor": 0,
+      "CurrentInternalStructure": 40,
+      "AssignedArmor": 80,
+      "AssignedRearArmor": 0
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "LeftLeg",
+      "CurrentArmor": 100,
+      "CurrentRearArmor": 0,
+      "CurrentInternalStructure": 60,
+      "AssignedArmor": 100,
+      "AssignedRearArmor": 0
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "RightLeg",
+      "CurrentArmor": 100,
+      "CurrentRearArmor": 0,
+      "CurrentInternalStructure": 60,
+      "AssignedArmor": 100,
+      "AssignedRearArmor": 0
+    }
+  ],
+  "inventory": [
+    {
+      "MountedLocation": "LeftTorso",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftTorso",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftTorso",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftTorso",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftTorso",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftTorso",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftTorso",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftLeg",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftLeg",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightLeg",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightLeg",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "Head",
+      "ComponentDefID": "Weapon_Laser_SmallLaser_2-Diverse_Optics",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 0,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightArm",
+      "ComponentDefID": "Weapon_Laser_MediumLaser_2-Magna",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 0,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftArm",
+      "ComponentDefID": "Weapon_Laser_MediumLaser_2-Magna",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 0,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Weapon_Laser_MediumLaser_2-Intek",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 0,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Weapon_Laser_MediumLaser_2-Intek",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Weapon_Laser_MediumLaser_2-Intek",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 2,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Weapon_Laser_MediumLaser_2-Diverse_Optics",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 3,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Weapon_Laser_MediumLaser_2-Diverse_Optics",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 4,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Weapon_Laser_MediumLaser_2-Diverse_Optics",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 5,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Gear_HeatSink_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "HeatSink",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    }
+  ]
+}

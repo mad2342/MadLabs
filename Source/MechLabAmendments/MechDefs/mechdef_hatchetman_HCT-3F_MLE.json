@@ -1,0 +1,234 @@
+{
+  "MechTags": {
+    "items": [
+      "unit_mech",
+      "unit_medium",
+      "unit_role_brawler",
+      "unit_lance_assassin",
+      "unit_jumpOK",
+      "unit_release",
+      "unit_dlc",
+      "unit_madlabs",
+      "unit_components_plusplusplus"
+    ],
+    "tagSetSourceFile": ""
+  },
+  "ChassisID": "chassisdef_hatchetman_HCT-3F",
+  "HeraldryID": null,
+  "Description": {
+    "Cost": 6220000,
+    "Rarity": 5,
+    "Purchasable": false,
+    "Manufacturer": null,
+    "Model": null,
+    "UIName": "Hatchetman HCT-3F",
+    "Id": "mechdef_hatchetman_HCT-3F_MLE",
+    "Name": "Hatchetman MLE",
+    "Details": "Hatchetman 3Fs are the king of the close quarters fight. Packing high impact short range weaponry, and a unique melee Hatchet, any target is in danger when close to the Hatchetman. The Hatchetmans lighter armor requires it to rely on maneuvering and ambushing to stay in the fight.",
+    "Icon": "uixTxrIcon_hatchetman"
+  },
+  "simGameMechPartCost": 622000,
+  "RequiredToSpawnCompanyTags": {
+    "items": [],
+    "tagSetSourceFile": ""
+  },
+  "MinAppearanceDate": null,
+  "Version": 1,
+  "Locations": [
+    {
+      "DamageLevel": "Functional",
+      "Location": "Head",
+      "CurrentArmor": 45,
+      "CurrentRearArmor": 0,
+      "CurrentInternalStructure": 16,
+      "AssignedArmor": 45,
+      "AssignedRearArmor": 0
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "CenterTorso",
+      "CurrentArmor": 110,
+      "CurrentRearArmor": 35,
+      "CurrentInternalStructure": 70,
+      "AssignedArmor": 110,
+      "AssignedRearArmor": 35
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "LeftTorso",
+      "CurrentArmor": 90,
+      "CurrentRearArmor": 25,
+      "CurrentInternalStructure": 55,
+      "AssignedArmor": 90,
+      "AssignedRearArmor": 25
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "RightTorso",
+      "CurrentArmor": 90,
+      "CurrentRearArmor": 25,
+      "CurrentInternalStructure": 55,
+      "AssignedArmor": 90,
+      "AssignedRearArmor": 25
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "LeftArm",
+      "CurrentArmor": 70,
+      "CurrentRearArmor": 0,
+      "CurrentInternalStructure": 35,
+      "AssignedArmor": 70,
+      "AssignedRearArmor": 0
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "RightArm",
+      "CurrentArmor": 70,
+      "CurrentRearArmor": 0,
+      "CurrentInternalStructure": 35,
+      "AssignedArmor": 70,
+      "AssignedRearArmor": 0
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "LeftLeg",
+      "CurrentArmor": 60,
+      "CurrentRearArmor": 0,
+      "CurrentInternalStructure": 55,
+      "AssignedArmor": 60,
+      "AssignedRearArmor": 0
+    },
+    {
+      "DamageLevel": "Functional",
+      "Location": "RightLeg",
+      "CurrentArmor": 60,
+      "CurrentRearArmor": 0,
+      "CurrentInternalStructure": 55,
+      "AssignedArmor": 60,
+      "AssignedRearArmor": 0
+    }
+  ],
+  "inventory": [
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Gear_JumpJet_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "JumpJet",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Gear_JumpJet_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "JumpJet",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftTorso",
+      "ComponentDefID": "Gear_JumpJet_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "JumpJet",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftTorso",
+      "ComponentDefID": "Gear_JumpJet_Generic_Standard",
+      "SimGameUID": null,
+      "ComponentDefType": "JumpJet",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "CenterTorso",
+      "ComponentDefID": "Gear_Gyro_Coventry_Mark-95",
+      "SimGameUID": null,
+      "ComponentDefType": "Upgrade",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "Head",
+      "ComponentDefID": "Gear_Cockpit_Ceres_Metals_Hardened",
+      "SimGameUID": null,
+      "ComponentDefType": "Upgrade",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "LeftArm",
+      "ComponentDefID": "Gear_Actuator_Coventry_B60-Extended",
+      "SimGameUID": null,
+      "ComponentDefType": "Upgrade",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightArm",
+      "ComponentDefID": "Gear_Actuator_Friedhof_Behemoth",
+      "SimGameUID": null,
+      "ComponentDefType": "Upgrade",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightArm",
+      "ComponentDefID": "Weapon_Laser_MediumLaser_3-Magna",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 0,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Weapon_Autocannon_AC5_3-Mydron",
+      "SimGameUID": null,
+      "ComponentDefType": "Weapon",
+      "HardpointSlot": 0,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    },
+    {
+      "MountedLocation": "RightTorso",
+      "ComponentDefID": "Ammo_AmmunitionBox_Generic_AC5",
+      "SimGameUID": null,
+      "ComponentDefType": "AmmunitionBox",
+      "HardpointSlot": -1,
+      "GUID": null,
+      "DamageLevel": "Functional",
+      "prefabName": null,
+      "hasPrefabName": false
+    }
+  ]
+}
