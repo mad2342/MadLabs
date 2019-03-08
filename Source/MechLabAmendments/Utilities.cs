@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BattleTech;
+using BattleTech.Data;
 using Harmony;
 using HBS.Collections;
 
@@ -21,7 +22,7 @@ namespace MechLabAmendments
             {
              return 2;
             }
-            else if (d >= 5)
+            else if (d >= 4)
             {
                 return 1;
             }
@@ -49,6 +50,48 @@ namespace MechLabAmendments
             {
                 return 0;
             }
+        }
+
+        public static string GetMechDefIdBasedOnSameChassis(string chassisID, int threatLevel, DataManager dm)
+        {
+            string replacementMechDefId = "";
+
+            Logger.LogLine("[Utilities.GetMechDefIdBasedOnSameChassis] Get replacement for chassisID: " + chassisID + " and threatLevel: " + threatLevel);
+
+            string mechTagForThreatLevel = Utilities.GetMechTagForThreatLevel(threatLevel);
+            Logger.LogLine("[Utilities.GetMechDefIdBasedOnSameChassis] mechTagForThreatLevel: " + mechTagForThreatLevel);
+
+            List<MechDef> allMechDefs = new List<MechDef>();
+            foreach (string key in dm.MechDefs.Keys)
+            {
+                MechDef mechDef = dm.MechDefs.Get(key);
+                allMechDefs.Add(mechDef);
+            }
+
+            List<string> mechDefIdsBasedOnSameChassis = allMechDefs
+                .Where(mechDef => mechDef.ChassisID == chassisID)
+                .Where(mechDef => mechDef.MechTags.Contains(mechTagForThreatLevel))
+                .Select(mechDef => mechDef.Description.Id)
+                .ToList();
+
+            foreach (string Id in mechDefIdsBasedOnSameChassis)
+            {
+                Logger.LogLine("[Utilities.GetMechDefIdBasedOnSameChassis] mechDefIdsBasedOnSameChassis(" + chassisID + "): " + Id);
+            }
+
+            if (mechDefIdsBasedOnSameChassis.Count > 0)
+            {
+                mechDefIdsBasedOnSameChassis.Shuffle<string>();
+                replacementMechDefId = mechDefIdsBasedOnSameChassis[0];
+                Logger.LogLine("[Utilities.GetMechDefIdBasedOnSameChassis] replacementMechDefId: " + replacementMechDefId);
+            }
+            else
+            {
+                Logger.LogLine("[Utilities.GetMechDefIdBasedOnSameChassis] Couldn't find a replacement. Falling back to stock...");
+                replacementMechDefId = chassisID.Replace("chassisdef", "mechdef");
+            }
+
+            return replacementMechDefId;
         }
 
         public static string GetMechTagForThreatLevel(int threatLevel)
@@ -168,67 +211,6 @@ namespace MechLabAmendments
                     return "unit_components_neutral";
             }
         }
-
-        // Deprecated
-        public static string TagMechDefAccordingToInventory(MechComponentRef[] mechDefInventory)
-        {
-            string result = "unit_components_neutral";
-
-            // Ignore fixed components, add up weapons and upgrades
-            int weaponCount = mechDefInventory
-                .Where(component => component.ComponentDefType == ComponentType.Weapon)
-                .Where(component => component.IsFixed != true)
-                .ToArray().Length;
-            int upgradeCount = mechDefInventory
-                .Where(component => component.ComponentDefType == ComponentType.Upgrade)
-                .Where(component => component.IsFixed != true)
-                .ToArray().Length;
-            int componentCount = weaponCount + upgradeCount;
-
-            // Get count of *all* plus weapons AND individual counts
-            int componentCountVariant = mechDefInventory.Where(component => component.Def.ComponentTags.Contains("component_type_variant")).ToArray().Length;
-            int componentCountVariant1 = mechDefInventory.Where(component => component.Def.ComponentTags.Contains("component_type_variant1")).ToArray().Length;
-            int componentCountVariant2 = mechDefInventory.Where(component => component.Def.ComponentTags.Contains("component_type_variant2")).ToArray().Length;
-            int componentCountVariant3 = mechDefInventory.Where(component => component.Def.ComponentTags.Contains("component_type_variant3")).ToArray().Length;
-
-            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentCount: " + componentCount);
-            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentCountVariant: " + componentCountVariant);
-            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentCountVariant1: " + componentCountVariant1);
-            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentCountVariant2: " + componentCountVariant2);
-            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentCountVariant3: " + componentCountVariant3);
-
-            // Threat ranges
-            Range<int> neutralRange = new Range<int>(componentCount, (int)(componentCount * 1.5));
-            Range<int> plus1Range = new Range<int>((int)(componentCount * 1.5 + 1), (int)(componentCount * 2.5));
-            Range<int> plus2Range = new Range<int>((int)(componentCount * 2.5 + 1), (int)(componentCount * 3.5));
-            Range<int> plus3Range = new Range<int>((int)(componentCount * 3.5 + 1), (int)(componentCount * 4));
-
-            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] neutralRange: " + neutralRange);
-            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] plus1Range: " + plus1Range);
-            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] plus2Range: " + plus2Range);
-            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] plus3Range: " + plus3Range);
-
-            // Simple threat classification: Stock gives 1 point, every + adds another
-            int componentClassification = (componentCount - componentCountVariant) + (componentCountVariant1 * 2) + (componentCountVariant2 * 3) + (componentCountVariant3 * 4);
-            Logger.LogLine("[Utilities.TagMechDefAccordingToInventory] componentClassification: " + componentClassification);
-
-            if (plus1Range.ContainsValue(componentClassification))
-            {
-                result = "unit_components_plus";
-            }
-            else if (plus2Range.ContainsValue(componentClassification))
-            {
-                result = "unit_components_plusplus";
-            }
-            else if (plus3Range.ContainsValue(componentClassification))
-            {
-                result = "unit_components_plusplusplus";
-            }
-
-            return result;
-        }
-
-
 
         public static string GetPilotIdForMechDef(MechDef mechDef)
         {
