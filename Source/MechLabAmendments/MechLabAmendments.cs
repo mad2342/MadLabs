@@ -9,6 +9,8 @@ namespace MechLabAmendments
         public static string LogPath;
         public static string ModDirectory;
 
+        internal static bool EnableComponentGenerator = false;
+
         // BEN: Debug (0: nothing, 1: errors, 2:all)
         internal static int DebugLevel = 2;
 

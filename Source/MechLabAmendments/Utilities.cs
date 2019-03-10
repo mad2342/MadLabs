@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BattleTech;
 using BattleTech.Data;
-using Harmony;
 using HBS.Collections;
 
 namespace MechLabAmendments

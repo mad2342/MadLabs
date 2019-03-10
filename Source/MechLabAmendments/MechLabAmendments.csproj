@@ -61,7 +61,7 @@
     <Compile Include="Holder.cs" />
     <Compile Include="MechLabAmendments.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Patches\Cheats.cs" />
+    <Compile Include="Patches\ComponentGenerator.cs" />
     <Compile Include="Patches\MechLab.cs" />
     <Compile Include="Patches\Salvage.cs" />
     <Compile Include="Patches\Spawns.cs" />
@@ -74,7 +74,7 @@
     <None Include="mod.json" />
     <None Include="README.md" />
     <None Include="PilotDefs\*.json" />
-	<None Include="MechDefs\*.json" />
+    <None Include="MechDefs\*.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

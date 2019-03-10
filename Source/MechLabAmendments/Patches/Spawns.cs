@@ -4,13 +4,10 @@ using BattleTech;
 using BattleTech.Data;
 using HBS.Collections;
 using BattleTech.Framework;
-using System.Collections.Generic;
-using HBS.Data;
-using System.Linq;
 
 namespace MechLabAmendments.Patches
 {
-    // Get some Contract/Progression information
+    // Get and Save some Contract/Progression information
     [HarmonyPatch(typeof(Contract), "Begin")]
     public static class Contract_Begin_Patch
     {
@@ -26,6 +23,9 @@ namespace MechLabAmendments.Patches
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.DaysPassed: " + simGameState.DaysPassed);
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.GlobalDifficulty: " + simGameState.GlobalDifficulty);
 
+                Fields.CurrentContractTotalThreatLevel = 0;
+                // @ToDo: Play around with this. Should also allow multiple +++ Units on 2 skull constracts in late game...
+                Fields.MaxAllowedTotalThreatLevelPerContract = __instance.Difficulty;
                 Fields.MaxAllowedExtraThreatLevelByProgression = Utilities.GetMaxAllowedExtraThreatLevelByProgression(simGameState.DaysPassed, simGameState.CompanyTags);
                 Fields.MaxAllowedMadlabsUnitsPerLance = Utilities.GetMaxAllowedMadlabsUnitsByProgression(simGameState.GlobalDifficulty);
                 Logger.LogLine("[Contract_Begin_PREFIX] Fields.MaxAllowedExtraThreatLevelByProgression: " + Fields.MaxAllowedExtraThreatLevelByProgression);
@@ -121,16 +121,34 @@ namespace MechLabAmendments.Patches
                             // Normalize ThreatLevel
                             int selectedMechsExtraThreatLevel = Utilities.GetExtraThreatLevelFromMechDef(selectedMechDef);
                             Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] selectedMechDefId(" + selectedMechDefId + ") has extraThreatLevel: " + selectedMechsExtraThreatLevel);
+
+                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Fields.MaxAllowedTotalThreatLevelPerContract: " + Fields.MaxAllowedTotalThreatLevelPerContract);
+                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Fields.CurrentContractTotalThreatLevel: " + Fields.CurrentContractTotalThreatLevel);
+                            int remainingAllowedExtraThreatLevelForContract = Fields.MaxAllowedTotalThreatLevelPerContract - Fields.CurrentContractTotalThreatLevel;
+
+                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] remainingAllowedExtraThreatLevelForContract: " + remainingAllowedExtraThreatLevelForContract);
                             Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Fields.MaxAllowedExtraThreatLevelByProgression: " + Fields.MaxAllowedExtraThreatLevelByProgression);
-                            if (selectedMechsExtraThreatLevel > Fields.MaxAllowedExtraThreatLevelByProgression)
+                            int allowedExtraThreatLevel = Math.Min(Fields.MaxAllowedExtraThreatLevelByProgression, remainingAllowedExtraThreatLevelForContract);
+                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] allowedExtraThreatLevel: " + allowedExtraThreatLevel);
+
+                            if (selectedMechsExtraThreatLevel > allowedExtraThreatLevel)
                             {
                                 // Replace with less powerful version of the same Mech (Fallback to STOCK included)
-                                replacementMechDefId = Utilities.GetMechDefIdBasedOnSameChassis(selectedMechDef.ChassisID, Fields.MaxAllowedExtraThreatLevelByProgression, ___dataManager);
+                                replacementMechDefId = Utilities.GetMechDefIdBasedOnSameChassis(selectedMechDef.ChassisID, allowedExtraThreatLevel, ___dataManager);
                                 __instance.selectedUnitDefId = replacementMechDefId;
+
+                                // Track total additional threat
+                                Fields.CurrentContractTotalThreatLevel += allowedExtraThreatLevel;
 
                                 // Add to load request
                                 loadRequest.AddBlindLoadRequest(BattleTechResourceType.MechDef, __instance.selectedUnitDefId, new bool?(false));
                             }
+                            else
+                            {
+                                Fields.CurrentContractTotalThreatLevel += selectedMechsExtraThreatLevel;
+                            }
+                            Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Fields.CurrentContractTotalThreatLevel: " + Fields.CurrentContractTotalThreatLevel);
+
 
                             // Put another pilot in (even if the replacement did fall back to STOCK)
                             __instance.selectedPilotDefId = Utilities.GetPilotIdForMechDef(selectedMechDef);
@@ -140,6 +158,7 @@ namespace MechLabAmendments.Patches
 
                             // Count
                             Fields.CurrentLanceMadlabsUnitCount++;
+                            
                         }
                         else
                         {
