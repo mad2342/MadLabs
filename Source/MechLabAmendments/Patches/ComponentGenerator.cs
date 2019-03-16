@@ -4,7 +4,7 @@ using Harmony;
 namespace MechLabAmendments.Patches
 {
     [HarmonyPatch(typeof(SimGameState), "_OnAttachUXComplete")]
-    public static class SimGameState__OnAttachUXComplete_Patch
+    public static class SimGameState__OnAttachUXComplete_ComponentGenerator
     {
         public static bool Prepare()
         {

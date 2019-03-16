@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.IO;
 using Harmony;
+using System.Collections.Generic;
 
 namespace MechLabAmendments
 {
@@ -10,6 +11,9 @@ namespace MechLabAmendments
         public static string ModDirectory;
 
         internal static bool EnableComponentGenerator = false;
+        internal static bool EnableContractGenerator = false;
+        internal static bool EnableContractDifficultyVariance = true;
+        internal static List<string> ContractOverrideIDs = new List<string>() { "Assassinate_Headhunt_P", "Assassinate_Headhunt_PP", "Assassinate_Headhunt_PPP" };
 
         // BEN: Debug (0: nothing, 1: errors, 2:all)
         internal static int DebugLevel = 2;

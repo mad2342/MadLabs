@@ -10,6 +10,7 @@
 
 	"Manifest": [
 		{ "Type": "MechDef", "Path": "MechDefs\\" },
-		{ "Type": "PilotDef", "Path": "PilotDefs\\" }
+		{ "Type": "PilotDef", "Path": "PilotDefs\\" },
+		{ "Type": "ContractOverride", "Path": "ContractDefs" }
     ]
 }

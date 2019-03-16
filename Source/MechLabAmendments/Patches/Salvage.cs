@@ -122,4 +122,38 @@ namespace MechLabAmendments.Patches
             }
         }
     }
+
+    // Normalize MechParts for Salvage (Replacing custom MechDefs with Stock) 
+    // Otherwise each different MechDef gets their own MechPart-Stack in the Mechbay...
+    [HarmonyPatch(typeof(Contract), "CreateAndAddMechPart")]
+    public static class Contract_CreateAndAddMechPart_Patch
+    {
+        public static void Prefix(Contract __instance, ref MechDef m, DataManager ___dataManager)
+        {
+            try
+            {
+                if(!m.MechTags.Contains("unit_madlabs"))
+                {
+                    return;
+                }
+                else
+                {
+                    Logger.LogLine("[Contract_CreateAndAddMechPart_PREFIX] Handling MechPart of MechDef (" + m.Description.Id + ") which belongs to a custom MadLabs unit. Normalizing back to STOCK...");
+
+                    //SimGameState simGameState = __instance.BattleTechGame.Simulation;
+                    string currentMechDefId = m.Description.Id;
+                    string stockMechDefId = m.ChassisID.Replace("chassisdef", "mechdef");
+                    
+                    // Replace
+                    m = ___dataManager.MechDefs.Get(stockMechDefId);
+                    Logger.LogLine("[Contract_CreateAndAddMechPart_PREFIX] MechDef (" + currentMechDefId + ") was replaced with stock version (" + m.Description.Id + ")");
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+            }
+        }
+    }
 }
+

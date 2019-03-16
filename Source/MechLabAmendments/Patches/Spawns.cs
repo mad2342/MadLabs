@@ -23,9 +23,10 @@ namespace MechLabAmendments.Patches
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.DaysPassed: " + simGameState.DaysPassed);
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.GlobalDifficulty: " + simGameState.GlobalDifficulty);
 
-                Fields.CurrentContractTotalThreatLevel = 0;
                 // @ToDo: Play around with this. Should also allow multiple +++ Units on 2 skull constracts in late game...
+                Fields.CurrentContractTotalThreatLevel = 0;
                 Fields.MaxAllowedTotalThreatLevelPerContract = __instance.Difficulty;
+
                 Fields.MaxAllowedExtraThreatLevelByProgression = Utilities.GetMaxAllowedExtraThreatLevelByProgression(simGameState.DaysPassed, simGameState.CompanyTags);
                 Fields.MaxAllowedMadlabsUnitsPerLance = Utilities.GetMaxAllowedMadlabsUnitsByProgression(simGameState.GlobalDifficulty);
                 Logger.LogLine("[Contract_Begin_PREFIX] Fields.MaxAllowedExtraThreatLevelByProgression: " + Fields.MaxAllowedExtraThreatLevelByProgression);

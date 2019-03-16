@@ -8,6 +8,26 @@ namespace MechLabAmendments
 {
     class Utilities
     {
+        public static int GetMaxAllowedContractDifficultyVariance(SimGameState.SimGameType gameMode, TagSet companyTags)
+        {
+            if (companyTags.Contains("oc12_post_itrom_attack"))
+            {
+                return 6;
+            }
+            else if (companyTags.Contains("oc08_post_unearthed_secrets"))
+            {
+                return 4;
+            }
+            else if (companyTags.Contains("oc04_post_argo"))
+            {
+                return 2;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
         public static int GetMaxAllowedMadlabsUnitsByProgression(float globalDifficulty)
         {
             int d = (int)globalDifficulty;
@@ -32,7 +52,7 @@ namespace MechLabAmendments
 
         public static int GetMaxAllowedExtraThreatLevelByProgression(int daysPassed, TagSet companyTags)
         {
-            if (companyTags.Contains("oc12_post_itrom_attack,") || daysPassed > 900)
+            if (companyTags.Contains("oc12_post_itrom_attack") || daysPassed > 900)
             {
                 return 3;
             }

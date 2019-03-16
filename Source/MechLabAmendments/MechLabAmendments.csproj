@@ -56,6 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Patches\Contracts.cs" />
     <Compile Include="Extensions\MechLabInventoryWidgetExtensions.cs" />
     <Compile Include="Extensions\MechLabPanelExtensions.cs" />
     <Compile Include="Holder.cs" />
@@ -75,6 +76,8 @@
     <None Include="README.md" />
     <None Include="PilotDefs\*.json" />
     <None Include="MechDefs\*.json" />
+    <None Include="ContractDefs\*.json" />
+    <None Include="StreamingAssets\data\contracts\**\*.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -85,6 +88,8 @@ xcopy $(ProjectDir)README.md $(SolutionDir)..\Release\$(TargetName)\ /Y
 xcopy $(ProjectDir)README.md $(SolutionDir)..\ /Y
 xcopy $(ProjectDir)PilotDefs\*.json $(SolutionDir)..\Release\$(TargetName)\PilotDefs\ /Y
 xcopy $(ProjectDir)MechDefs\*.json $(SolutionDir)..\Release\$(TargetName)\MechDefs\ /Y
+xcopy $(ProjectDir)ContractDefs\*.json $(SolutionDir)..\Release\$(TargetName)\ContractDefs\ /Y
+xcopy $(ProjectDir)StreamingAssets\data\contracts\* $(SolutionDir)..\Release\$(TargetName)\StreamingAssets\data\contracts\ /Y /S
     </PostBuildEvent>
   </PropertyGroup>
 </Project>
