@@ -12,7 +12,7 @@ using HBS;
 using HBS.Collections;
 using Newtonsoft.Json;
 
-namespace MechLabAmendments.Extensions
+namespace MadLabs.Extensions
 {
     public static class MechLabPanelExtensions
     {
@@ -598,7 +598,7 @@ namespace MechLabAmendments.Extensions
                 // Set some halfway correct value for part value
                 int simGameMechPartCost = mechDef.SimGameMechPartCost > 0 ? mechDef.SimGameMechPartCost : (mechDef.BattleValue / 10);
 
-                string baseDirectory = $"{ MechLabAmendments.ModDirectory}";
+                string baseDirectory = $"{ MadLabs.ModDirectory}";
                 string filePath = Path.Combine(Path.Combine(baseDirectory, "MechDefs"), $"{mechDefId}.json");
                 Directory.CreateDirectory(Directory.GetParent(filePath).FullName);
 

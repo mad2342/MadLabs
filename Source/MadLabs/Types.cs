@@ -1,7 +1,7 @@
 ﻿using System;
 using BattleTech;
 
-namespace MechLabAmendments
+namespace MadLabs
 {
     public class Range<T> where T : IComparable<T>
     {

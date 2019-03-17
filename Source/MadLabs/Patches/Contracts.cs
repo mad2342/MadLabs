@@ -8,14 +8,14 @@ using Harmony;
 using HBS.Data;
 using UnityEngine;
 
-namespace MechLabAmendments.Patches
+namespace MadLabs.Patches
 {
     [HarmonyPatch(typeof(SimGameState), "_OnAttachUXComplete")]
     public static class SimGameState__OnAttachUXComplete_ContractGenerator
     {
         public static bool Prepare()
         {
-            return MechLabAmendments.EnableContractGenerator;
+            return MadLabs.EnableContractGenerator;
         }
 
         public static void Postfix(SimGameState __instance)
@@ -32,7 +32,7 @@ namespace MechLabAmendments.Patches
     {
         public static bool Prepare()
         {
-            return MechLabAmendments.EnableDynamicContractDifficultyVariance;
+            return MadLabs.EnableDynamicContractDifficultyVariance;
         }
 
         public static void Prefix(SimGameState __instance, ref int baseDiff)
@@ -97,8 +97,8 @@ namespace MechLabAmendments.Patches
                 Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Override.filename: " + contract.Override.filename);
 
 
-                //if (MechLabAmendments.ContractOverrideIDs.Contains(contract.Override.ID))
-                if (MechLabAmendments.ContractOverrideNames.Contains(contract.Name))
+                //if (MadLabs.ContractOverrideIDs.Contains(contract.Override.ID))
+                if (MadLabs.ContractOverrideNames.Contains(contract.Name))
                 {
                     Logger.LogLine("[SimGameState_PrepContract_POSTFIX] Contract (" + contract.Name + ") is an MLA Contract. Overriding difficulty...");
 

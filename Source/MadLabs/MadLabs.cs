@@ -3,9 +3,9 @@ using System.IO;
 using Harmony;
 using System.Collections.Generic;
 
-namespace MechLabAmendments
+namespace MadLabs
 {
-    public class MechLabAmendments
+    public class MadLabs
     {
         public static string LogPath;
         public static string ModDirectory;
@@ -23,10 +23,10 @@ namespace MechLabAmendments
         {
             ModDirectory = directory;
 
-            LogPath = Path.Combine(ModDirectory, "MechLabAmendments.log");
-            File.CreateText(MechLabAmendments.LogPath);
+            LogPath = Path.Combine(ModDirectory, "MadLabs.log");
+            File.CreateText(MadLabs.LogPath);
 
-            var harmony = HarmonyInstance.Create("de.mad.MechLabAmendments");
+            var harmony = HarmonyInstance.Create("de.mad.MadLabs");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
     }

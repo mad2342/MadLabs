@@ -1,6 +1,6 @@
 ﻿using BattleTech.UI;
 
-namespace MechLabAmendments.Extensions
+namespace MadLabs.Extensions
 {
     public static class MechLabInventoryWidgetExtensions
     {

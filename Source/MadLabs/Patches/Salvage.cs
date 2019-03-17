@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using BattleTech;
 using BattleTech.Data;
 
-namespace MechLabAmendments.Patches
+namespace MadLabs.Patches
 {
     // Try to limit the amount of plus weapons in salvage
     // In Vanilla the OpFor *never* fields Mechs with rare weapons, these get generated on salvage creation

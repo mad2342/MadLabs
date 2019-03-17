@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MechLabAmendments", "MechLabAmendments\MechLabAmendments.csproj", "{AEAF5F5D-5890-4586-8A37-C15F2763B552}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MadLabs", "MadLabs\MadLabs.csproj", "{AEAF5F5D-5890-4586-8A37-C15F2763B552}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

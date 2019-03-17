@@ -4,7 +4,7 @@ using BattleTech;
 using BattleTech.Data;
 using HBS.Collections;
 
-namespace MechLabAmendments
+namespace MadLabs
 {
     class Utilities
     {

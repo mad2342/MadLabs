@@ -5,9 +5,9 @@ using HBS;
 using TMPro;
 using System.Linq;
 using System.Collections.Generic;
-using MechLabAmendments.Extensions;
+using MadLabs.Extensions;
 
-namespace MechLabAmendments.Patches
+namespace MadLabs.Patches
 {
 
     [HarmonyPatch(typeof(MechLabMechInfoWidget), "OnNameInputEndEdit")]
@@ -123,7 +123,7 @@ namespace MechLabAmendments.Patches
                 else if (triggerSave)
                 {
                     GenericPopupBuilder
-                        .Create("Export MechDef", "This will export current MechDef to /Mods/MechLabAmendments/MechDefs/" + mechDefId + ".json")
+                        .Create("Export MechDef", "This will export current MechDef to /Mods/MadLabs/MechDefs/" + mechDefId + ".json")
                         .AddButton("Cancel", null, true, null)
                         .AddButton("Export", new Action(() => mechLabPanel.ExportCurrentMechDefToJson(mechDefId, mechDefName)), true, null)
                         .CancelOnEscape()

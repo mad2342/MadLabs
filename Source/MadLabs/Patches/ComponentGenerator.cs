@@ -1,14 +1,14 @@
 ﻿using BattleTech;
 using Harmony;
 
-namespace MechLabAmendments.Patches
+namespace MadLabs.Patches
 {
     [HarmonyPatch(typeof(SimGameState), "_OnAttachUXComplete")]
     public static class SimGameState__OnAttachUXComplete_ComponentGenerator
     {
         public static bool Prepare()
         {
-            return MechLabAmendments.EnableComponentGenerator;
+            return MadLabs.EnableComponentGenerator;
         }
 
         public static void Postfix(SimGameState __instance, StatCollection ___companyStats)

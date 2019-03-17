@@ -1,4 +1,4 @@
-# MechLab Amendments
+# MadLabs
 
 [Battletech Mod][ModTek][BETA] Campaign MechLab features save/load of mech definitions as well as a reset to stock loadout.
 

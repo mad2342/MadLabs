@@ -7,8 +7,8 @@
     <ProjectGuid>{AEAF5F5D-5890-4586-8A37-C15F2763B552}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MechLabAmendments</RootNamespace>
-    <AssemblyName>MechLabAmendments</AssemblyName>
+    <RootNamespace>MadLabs</RootNamespace>
+    <AssemblyName>MadLabs</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -60,7 +60,7 @@
     <Compile Include="Extensions\MechLabInventoryWidgetExtensions.cs" />
     <Compile Include="Extensions\MechLabPanelExtensions.cs" />
     <Compile Include="Holder.cs" />
-    <Compile Include="MechLabAmendments.cs" />
+    <Compile Include="MadLabs.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Patches\ComponentGenerator.cs" />
     <Compile Include="Patches\MechLab.cs" />

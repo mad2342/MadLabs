@@ -1,4 +1,4 @@
-﻿namespace MechLabAmendments
+﻿namespace MadLabs
 {
     public static class Fields
     {

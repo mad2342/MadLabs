@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace MechLabAmendments
+namespace MadLabs
 {
     public static class ReflectionHelper
     {

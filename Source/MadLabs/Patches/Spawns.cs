@@ -5,7 +5,7 @@ using BattleTech.Data;
 using HBS.Collections;
 using BattleTech.Framework;
 
-namespace MechLabAmendments.Patches
+namespace MadLabs.Patches
 {
     // Get and Save some Contract/Progression information
     [HarmonyPatch(typeof(Contract), "Begin")]
