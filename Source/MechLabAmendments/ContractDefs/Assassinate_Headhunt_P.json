@@ -2,7 +2,7 @@
     "ID" : "Assassinate_Headhunt_P",
     "contractName" : "Precautionary Strike",
     "contractDisplayStyle" : "BaseCampaignNormal",
-    "difficulty" : 11,
+    "difficulty" : 10,
     "difficultyUIModifier" : 0,
     "weight" : 1,
     "scope" : "STANDARD",

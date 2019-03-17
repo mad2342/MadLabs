@@ -12,8 +12,9 @@ namespace MechLabAmendments
 
         internal static bool EnableComponentGenerator = false;
         internal static bool EnableContractGenerator = false;
-        internal static bool EnableContractDifficultyVariance = true;
+        internal static bool EnableDynamicContractDifficultyVariance = true;
         internal static List<string> ContractOverrideIDs = new List<string>() { "Assassinate_Headhunt_P", "Assassinate_Headhunt_PP", "Assassinate_Headhunt_PPP" };
+        internal static List<string> ContractOverrideNames = new List<string>() { "Precautionary Strike", "Preventive Strike", "Surgical Strike" };
 
         // BEN: Debug (0: nothing, 1: errors, 2:all)
         internal static int DebugLevel = 2;

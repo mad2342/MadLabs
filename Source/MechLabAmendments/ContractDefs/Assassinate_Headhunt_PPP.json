@@ -2,7 +2,7 @@
     "ID" : "Assassinate_Headhunt_PPP",
     "contractName" : "Surgical Strike",
     "contractDisplayStyle" : "BaseCampaignNormal",
-    "difficulty" : 15,
+    "difficulty" : 12,
     "difficultyUIModifier" : 0,
     "weight" : 1,
     "scope" : "STANDARD",

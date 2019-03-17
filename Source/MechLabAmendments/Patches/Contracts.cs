@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BattleTech;
 using BattleTech.Data;
 using BattleTech.Framework;
+using BattleTech.UI;
 using Harmony;
 using HBS.Data;
 using UnityEngine;
@@ -19,11 +20,11 @@ namespace MechLabAmendments.Patches
 
         public static void Postfix(SimGameState __instance)
         {
-            __instance.AddContract("Assassinate_Headhunt_PPP", "HostileMercenaries", "Locals", true);
+            __instance.AddContract("Assassinate_Headhunt_P", "AuriganPirates", "Locals", true);
+            __instance.AddContract("Assassinate_Headhunt_PP", "MajestyMetals", "Locals", true);
+            __instance.AddContract("Assassinate_Headhunt_PPP", "Betrayers", "Locals", true);
         }
     }
-
-    // @ToDo: Reset Constants.Story.ContractDifficultyVariance to DEFAULT for CAREER mode (find a good entrypoint)
 
     // Dynamic ContractDifficultyVariance
     [HarmonyPatch(typeof(SimGameState), "GetDifficultyRangeForContract")]
@@ -31,13 +32,14 @@ namespace MechLabAmendments.Patches
     {
         public static bool Prepare()
         {
-            return MechLabAmendments.EnableContractDifficultyVariance;
+            return MechLabAmendments.EnableDynamicContractDifficultyVariance;
         }
 
         public static void Prefix(SimGameState __instance, ref int baseDiff)
         {
             try
             {
+                Logger.LogLine("----------------------------------------------------------------------------------------------------");
                 Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] SimGameState.Constants.Story.ContractDifficultyVariance: " + __instance.Constants.Story.ContractDifficultyVariance);
                 int overrideContractDifficultyVariance = Utilities.GetMaxAllowedContractDifficultyVariance(__instance.SimGameMode, __instance.CompanyTags);
                 Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] overrideContractDifficultyVariance: " + overrideContractDifficultyVariance);
@@ -89,61 +91,58 @@ namespace MechLabAmendments.Patches
                 Logger.LogLine("----------------------------------------------------------------------------------------------------");
                 Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Name: " + contract.Name);
                 Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Difficulty: " + contract.Difficulty);
-
-                // Why the fuck are these empty? -> Fixed by HBS in 1.5.X
-                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Override.ID: " + contract.Override.ID);
                 Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Override.finalDifficulty: " + contract.Override.finalDifficulty);
+                // Why the fuck are these empty for "SimGameState.AddContract()"?
+                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Override.ID: " + contract.Override.ID);
+                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Override.filename: " + contract.Override.filename);
 
 
-
-                int overrideDifficulty = -1;
-                int overrideReward = -1;
-
-                // Custom ContractOverrides should all be between 9 and 15 (BTG normally uses only up to 8)
-                List<Contract_MDD> contractsMDD = MetadataDatabase.Instance.GetContractsByDifficultyRange(9, 15, true);
-                foreach (Contract_MDD contractMDD in contractsMDD)
+                //if (MechLabAmendments.ContractOverrideIDs.Contains(contract.Override.ID))
+                if (MechLabAmendments.ContractOverrideNames.Contains(contract.Name))
                 {
-                    Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractMDD.ContractID: " + contractMDD.ContractID);
-                    Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractMDD.Name: " + contractMDD.Name);
-                    Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractMDD.Difficulty: " + contractMDD.Difficulty);
+                    Logger.LogLine("[SimGameState_PrepContract_POSTFIX] Contract (" + contract.Name + ") is an MLA Contract. Overriding difficulty...");
 
-                    // Double check custom ContractOverride by ID and handle difficulty override by Name
-                    // Again: WHY the fuck is contract.Override.ID empty at this point?
-                    // Remember to ALWAYS use unique names
-                    if (MechLabAmendments.ContractOverrideIDs.Contains(contractMDD.ContractID) && contract.Name == contractMDD.Name)
+                    int overrideDifficulty = -1;
+                    int overrideReward = -1;
+
+                    // Selecting by Difficulty as there currently is no selection by ID(s)
+                    // Custom ContractOverrides should all be between 10 and 15 (BTG normally uses only up to 9)
+                    List<Contract_MDD> contractsMDD = MetadataDatabase.Instance.GetContractsByDifficultyRange(10, 12, true);
+                    foreach (Contract_MDD contractMDD in contractsMDD)
                     {
-                        Logger.LogLine("[SimGameState_PrepContract_POSTFIX] Contract (" + contract.Name + ") is an MLA Contract. Overriding difficulty...");
-                        overrideDifficulty = (int)contractMDD.Difficulty;
+                        Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractMDD.ContractID: " + contractMDD.ContractID);
+                        Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractMDD.Name: " + contractMDD.Name);
+                        Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractMDD.Difficulty: " + contractMDD.Difficulty);
 
-                        if (overrideDifficulty > 0 && overrideDifficulty != contract.Difficulty)
+                        //if (contractMDD.ContractID == contract.Override.ID)
+                        if (contractMDD.Name == contract.Name)
                         {
-                            // Set
-                            contract.SetFinalDifficulty(overrideDifficulty);
+                            overrideDifficulty = (int)contractMDD.Difficulty;
 
-                            // Adjust rewards accordingly
-                            if (contract.Override.contractRewardOverride >= 0)
+                            if (overrideDifficulty > 0 && overrideDifficulty != contract.Difficulty)
                             {
-                                overrideReward = contract.Override.contractRewardOverride;
+                                // Set
+                                contract.SetFinalDifficulty(overrideDifficulty);
+
+                                // Adjust rewards accordingly
+                                if (contract.Override.contractRewardOverride >= 0)
+                                {
+                                    overrideReward = contract.Override.contractRewardOverride;
+                                }
+                                else
+                                {
+                                    overrideReward = __instance.CalculateContractValueByContractType(contract.ContractType, overrideDifficulty, (float)__instance.Constants.Finances.ContractPricePerDifficulty, __instance.Constants.Finances.ContractPriceVariance, 0);
+                                }
+                                overrideReward = SimGameState.RoundTo((float)overrideReward, 1000);
+                                contract.SetInitialReward(overrideReward);
                             }
-                            else
-                            {
-                                overrideReward = __instance.CalculateContractValueByContractType(contract.ContractType, overrideDifficulty, (float)__instance.Constants.Finances.ContractPricePerDifficulty, __instance.Constants.Finances.ContractPriceVariance, 0);
-                            }
-                            overrideReward = SimGameState.RoundTo((float)overrideReward, 1000);
-                            contract.SetInitialReward(overrideReward);
                         }
-
-                        // TEST
-                        //ContractOverride contractOverride = __instance.DataManager.ContractOverrides.Get(contractMDD.ContractID);
-                        //Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractOverride.ID: " + contractOverride.ID);
-                        //Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractOverride.contractName: " + contractOverride.contractName);
-                        //Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractOverride.difficulty: " + contractOverride.difficulty);                    }
                     }
                 }
 
-                //Check again
-                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] (" + contract.Name + ") contract.Difficulty: " + contract.Difficulty);
-                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] (" + contract.Name + ") contract.Override.finalDifficulty: " + contract.Override.finalDifficulty);
+                //Check
+                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] (" + contract.Name + ") CHECK contract.Difficulty: " + contract.Difficulty);
+                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] (" + contract.Name + ") CHECK contract.Override.finalDifficulty: " + contract.Override.finalDifficulty);
             }
             catch (Exception e)
             {
@@ -169,12 +168,10 @@ namespace MechLabAmendments.Patches
     [HarmonyPatch(typeof(SimGameState), "GetAllCurrentlySelectableContracts")]
     public static class SimGameState_GetAllCurrentlySelectableContracts_Patch
     {
-        public static void Postfix(SimGameState __instance, ref int __result)
+        public static void Postfix(SimGameState __instance, ref int __result, List<string> ___contractDiscardPile)
         {
             try
             {
-                Logger.LogLine("----------------------------------------------------------------------------------------------------");
-
                 // Campaign
                 //int currentSystemDifficulty = __instance.CurSystem.Def.GetDifficulty(SimGameState.SimGameType.KAMEA_CAMPAIGN);
                 // Career
