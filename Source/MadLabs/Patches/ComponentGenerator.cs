@@ -13,10 +13,11 @@ namespace MadLabs.Patches
 
         public static void Postfix(SimGameState __instance, StatCollection ___companyStats)
         {
-            string[] MechsToAdd = new string[] { "mechdef_cyclops_CP-10-Q" };
+            string[] MechsToAdd = new string[] { "mechdef_dragon_DRG-1N", "mechdef_griffin_GRF-1S", "mechdef_thunderbolt_TDR-5SE" };
             string[] WeaponsToAdd = new string[] { "Weapon_Gauss_Gauss_0-STOCK", "Weapon_Gauss_Gauss_1-M7", "Weapon_Gauss_Gauss_2-M9" };
             string[] UpgradesToAdd = new string[] { "Gear_Actuator_Coventry_B60-Extended", "Gear_Actuator_Friedhof_Colossus", "Gear_Actuator_Pitban_Kangaroo" };
             string[] HeatsinksToAdd = new string[] { "Gear_HeatSink_Generic_Double", "Gear_HeatSink_Generic_Thermal-Exchanger-III" };
+            int fundsToAdd = 10000000;
             int amount = 3;
 
             foreach (string Id in MechsToAdd)
@@ -56,6 +57,9 @@ namespace MadLabs.Patches
                 }
                 Logger.LogLine("[SimGameState__OnAttachUXComplete_POSTFIX] Added " + Id + "(" + num + ") to inventory.");
             }
+
+            // Funds
+            __instance.AddFunds(fundsToAdd, null, true);
         }
     }
 }
