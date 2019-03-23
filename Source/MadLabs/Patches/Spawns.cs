@@ -15,6 +15,9 @@ namespace MadLabs.Patches
         {
             try
             {
+                Logger.LogLine("----------------------------------------------------------------------------------------------------");
+                Logger.LogLine("-------------------------------------------------");
+                Logger.LogLine("-------------------------------");
                 Logger.LogLine("[Contract_Begin_PREFIX] Contract.Name: " + __instance.Name);
                 Logger.LogLine("[Contract_Begin_PREFIX] Contract.Difficulty: " + __instance.Difficulty);
 

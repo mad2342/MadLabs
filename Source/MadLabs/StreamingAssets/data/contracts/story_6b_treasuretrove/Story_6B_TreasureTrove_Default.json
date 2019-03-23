@@ -1,0 +1,748 @@
+{
+    "targetTeam" : {
+        "encounterLayerData" : {
+            "EncounterObjectGuid" : "fb6cc9f2-fe4c-4e2b-b492-9fae77a21776"
+        },
+        "teamGuid" : "be77cadd-e245-4240-a93e-b99cc98902a5",
+        "teamName" : "Target",
+        "faction" : "TaurianConcordat",
+        "teamLeaderCastDefId" : "castDef_TeamLeader_Current",
+        "lanceOverrideList" : [
+            {
+                "lanceSpawner" : {
+                    "EncounterObjectGuid" : "10e8686f-8d19-4058-9541-119c4dff041c"
+                },
+                "name" : "01_TargetLance",
+                "lanceDefId" : "Manual",
+                "lanceTagSet" : {
+                    "items" : [
+                        
+                    ],
+                    "tagSetSourceFile" : ""
+                },
+                "lanceExcludedTagSet" : {
+                    "items" : [
+                        
+                    ],
+                    "tagSetSourceFile" : "Tags/LanceTags"
+                },
+                "spawnEffectTags" : {
+                    "items" : [
+                        "spawn_poorly_maintained_25"
+                    ],
+                    "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                },
+                "lanceDifficultyAdjustment" : 0,
+                "selectedLanceDefId" : "",
+                "selectedLanceDifficulty" : 0,
+                "unitSpawnPointOverrideList" : [
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "f6a5d450-d3af-47f0-80d1-c5e53a4d8e45"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_commando_COM-1B",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_tactician",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "ae11ab47-d0ce-4980-b3b3-39c957c34a99"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_firestarter_FS9-H",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_defender",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "3ad4f797-b397-44cf-9eaf-32e95383f288"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_jenner_JR7-D",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_gunner",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "58ca1b45-de34-4c7d-8482-145742b34a0f"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_shadowhawk_SHD-2D",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                "spawn_poorly_maintained_50"
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_pilot",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    }
+                ]
+            },
+            {
+                "lanceSpawner" : {
+                    "EncounterObjectGuid" : "4e1ebbb5-4de5-46cd-8060-d8932fe639c7"
+                },
+                "name" : "01_TargetLance",
+                "lanceDefId" : "Manual",
+                "lanceTagSet" : {
+                    "items" : [
+                        
+                    ],
+                    "tagSetSourceFile" : ""
+                },
+                "lanceExcludedTagSet" : {
+                    "items" : [
+                        
+                    ],
+                    "tagSetSourceFile" : "Tags/LanceTags"
+                },
+                "spawnEffectTags" : {
+                    "items" : [
+                        
+                    ],
+                    "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                },
+                "lanceDifficultyAdjustment" : 0,
+                "selectedLanceDefId" : "",
+                "selectedLanceDifficulty" : 0,
+                "unitSpawnPointOverrideList" : [
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "57c19183-a5c6-4567-a92d-f9a838fd307f"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_panther_PNT-9R",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_gunner",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "2bfcb85e-2aeb-411c-a960-1a81a5ac08ee"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_jenner_JR7-D",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_gunner",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "315b0099-cb51-46e1-9e00-db2b53fe8721"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_enforcer_ENF-4R_P",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d7_defender",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "be7afefb-270b-4028-ab75-e8bfeac6c25e"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Vehicle",
+                        "unitDefId" : "vehicledef_SCORPION",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_pilot",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "ef39b3f2-ffd4-4450-93fe-d3d3c591290c"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Vehicle",
+                        "unitDefId" : "vehicledef_STRIKER",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_pilot",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "4ca7c2da-57a9-45b3-8cef-ebe88f814dc2"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechDef_None",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_default",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    }
+                ]
+            },
+            {
+                "lanceSpawner" : {
+                    "EncounterObjectGuid" : "0a028007-ea29-462e-921e-98277602828b"
+                },
+                "name" : "03_EnemyLance",
+                "lanceDefId" : "Manual",
+                "lanceTagSet" : {
+                    "items" : [
+                        
+                    ],
+                    "tagSetSourceFile" : "Tags/LanceTags"
+                },
+                "lanceExcludedTagSet" : {
+                    "items" : [
+                        
+                    ],
+                    "tagSetSourceFile" : "Tags/LanceTags"
+                },
+                "spawnEffectTags" : {
+                    "items" : [
+                        
+                    ],
+                    "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                },
+                "lanceDifficultyAdjustment" : 0,
+                "selectedLanceDefId" : "",
+                "selectedLanceDifficulty" : 0,
+                "unitSpawnPointOverrideList" : [
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "5b0b9403-4c15-48cc-9059-b7f8574eda30"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_awesome_AWS-8Q",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_gunner",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "1e415d01-7124-4dcb-9c3e-93d4d2c80217"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_battlemaster_BLR-1G",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_defender",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "3feaad7c-2eb4-4c75-a4e2-0810ba6f1dfd"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_griffin_GRF-1N",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_gunner",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "31fb8709-c4d5-4987-8250-8985352e2b4f"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_vindicator_VND-1R_PP",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d8_recon",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : ""
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    },
+                    {
+                        "unitSpawnPoint" : {
+                            "EncounterObjectGuid" : "54cef681-5297-43f4-ab56-073e275ca41e"
+                        },
+                        "customUnitName" : "",
+                        "customHeraldryDefId" : "",
+                        "unitType" : "Mech",
+                        "unitDefId" : "mechdef_zeus_ZEU-6S",
+                        "unitTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "unitExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/UnitTags"
+                        },
+                        "spawnEffectTags" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/SpawnEffectTags"
+                        },
+                        "pilotDefId" : "pilot_d6_gunner",
+                        "pilotTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "pilotExcludedTagSet" : {
+                            "items" : [
+                                
+                            ],
+                            "tagSetSourceFile" : "Tags/PilotTags"
+                        },
+                        "selectedUnitType" : "UNDEFINED",
+                        "selectedUnitDefId" : "",
+                        "selectedPilotDefId" : ""
+                    }
+                ]
+            }
+        ]
+    }
+}

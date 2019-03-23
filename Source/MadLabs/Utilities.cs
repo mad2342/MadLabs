@@ -10,11 +10,12 @@ namespace MadLabs
     {
         public static int GetMaxAllowedContractDifficultyVariance(SimGameState.SimGameType gameMode, TagSet companyTags)
         {
-            if (companyTags.Contains("oc12_post_itrom_attack"))
+            Logger.LogLine("[Utilities.GetMaxAllowedContractDifficultyVariance] companyTags: " + companyTags);
+            if (companyTags.Contains("oc14_post_armistice"))
             {
                 return 6;
             }
-            else if (companyTags.Contains("oc08_post_unearthed_secrets"))
+            else if (companyTags.Contains("oc09_post_damage_report"))
             {
                 return 4;
             }
@@ -52,11 +53,11 @@ namespace MadLabs
 
         public static int GetMaxAllowedExtraThreatLevelByProgression(int daysPassed, TagSet companyTags)
         {
-            if (companyTags.Contains("oc12_post_itrom_attack") || daysPassed > 900)
+            if (companyTags.Contains("oc14_post_armistice") || daysPassed > 900)
             {
                 return 3;
             }
-            else if (companyTags.Contains("oc08_post_unearthed_secrets") || daysPassed > 450)
+            else if (companyTags.Contains("oc09_post_damage_report") || daysPassed > 450)
             {
                 return 2;
             }
