@@ -175,7 +175,7 @@
                         "customUnitName" : "",
                         "customHeraldryDefId" : "",
                         "unitType" : "Mech",
-                        "unitDefId" : "mechdef_enforcer_ENF-4R",
+                        "unitDefId" : "mechdef_enforcer_ENF-4R_P",
                         "unitTagSet" : {
                             "items" : [
                                 
@@ -194,7 +194,7 @@
                             ],
                             "tagSetSourceFile" : "tags/SpawnEffectTags"
                         },
-                        "pilotDefId" : "pilot_d6_pilot",
+                        "pilotDefId" : "pilot_d7_pilot",
                         "pilotTagSet" : {
                             "items" : [
                                 
@@ -356,7 +356,7 @@
                             ],
                             "tagSetSourceFile" : "tags/SpawnEffectTags"
                         },
-                        "pilotDefId" : "pilot_d8_flanker",
+                        "pilotDefId" : "pilot_madlabs_flanker",
                         "pilotTagSet" : {
                             "items" : [
                                 
@@ -455,7 +455,7 @@
                         "customUnitName" : "",
                         "customHeraldryDefId" : "",
                         "unitType" : "Mech",
-                        "unitDefId" : "mechdef_panther_PNT-9R_P",
+                        "unitDefId" : "mechdef_panther_PNT-9R_PP",
                         "unitTagSet" : {
                             "items" : [
                                 "unit_mech",

@@ -154,7 +154,7 @@ namespace MadLabs.Patches
                             Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Fields.CurrentContractTotalThreatLevel: " + Fields.CurrentContractTotalThreatLevel);
 
 
-                            // Put another pilot in (even if the replacement did fall back to STOCK)
+                            // Put another pilot in (even if the replacement did fall back to STOCK or a lower level MechDef)
                             __instance.selectedPilotDefId = Utilities.GetPilotIdForMechDef(selectedMechDef);
 
                             // Add new pilot to load request

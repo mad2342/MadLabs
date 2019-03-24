@@ -35,48 +35,28 @@ namespace MadLabs.Patches
             return MadLabs.EnableDynamicContractDifficultyVariance;
         }
 
-        public static void Prefix(SimGameState __instance, ref int baseDiff)
+        public static bool Prefix(SimGameState __instance, int baseDiff, out int minDiff, out int maxDiff)
         {
-            try
-            {
-                Logger.LogLine("----------------------------------------------------------------------------------------------------");
-                Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] SimGameState.Constants.Story.ContractDifficultyVariance: " + __instance.Constants.Story.ContractDifficultyVariance);
-                int overrideContractDifficultyVariance = Utilities.GetMaxAllowedContractDifficultyVariance(__instance.SimGameMode, __instance.CompanyTags);
-                Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] overrideContractDifficultyVariance: " + overrideContractDifficultyVariance);
+            Logger.LogLine("----------------------------------------------------------------------------------------------------");
+            Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] SimGameState.Constants.Story.ContractDifficultyVariance: " + __instance.Constants.Story.ContractDifficultyVariance);
+            
+            //int overrideContractDifficultyVariance = Utilities.GetMaxAllowedContractDifficultyVariance(__instance.SimGameMode, __instance.CompanyTags);
+            //Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] overrideContractDifficultyVariance: " + overrideContractDifficultyVariance);
+            //__instance.Constants.Story.ContractDifficultyVariance = overrideContractDifficultyVariance;
 
-                // Set
-                __instance.Constants.Story.ContractDifficultyVariance = overrideContractDifficultyVariance;
+            int[] overrideContractDifficultyVariances = Utilities.GetMaxAllowedContractDifficultyVariances(__instance.SimGameMode, __instance.CompanyTags);
+            Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] overrideContractDifficultyVariances[0]: " + overrideContractDifficultyVariances[0]);
+            Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] overrideContractDifficultyVariances[1]: " + overrideContractDifficultyVariances[1]);
 
 
+            minDiff = Mathf.Max(1, baseDiff - overrideContractDifficultyVariances[0]);
+            maxDiff = Mathf.Max(1, baseDiff + overrideContractDifficultyVariances[1]);
+            Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] baseDiff: " + baseDiff);
+            Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] minDiff: " + minDiff);
+            Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] maxDiff: " + maxDiff);
 
-                // Adjustment depending on current StarSystem?
-                /*                 
-                StarSystem system = __instance.CurSystem;
-                Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] SimGameState.CurSystem: " + __instance.CurSystem.Name);
-                Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] SimGameState.CompanyTags: " + __instance.CompanyTags);
-                bool isCampaignMode = __instance.SimGameMode == SimGameState.SimGameType.KAMEA_CAMPAIGN;
-                Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] isCampaignMode: " + isCampaignMode);
-                bool isPostCampaign = __instance.CompanyTags.Contains("story_complete");
-                Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] isPostCampaign: " + isPostCampaign);
-
-                if (isCampaignMode && isPostCampaign)
-                {
-                    SimGameState.SimGameType simGameType = SimGameState.SimGameType.CAREER;
-                    // GlobalDifficulty for post KAMEA_CAMPAIGN is too high in comparison to CAREER. Needs to be adjusted if it should ever be used like this
-                    int overrideBaseDiff = system.Def.GetDifficulty(simGameType) + Mathf.FloorToInt(__instance.GlobalDifficulty);
-                    Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] StarSystemDef.Difficulty: " + system.Def.GetDifficulty(simGameType));
-                    Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] SimGameState.GlobalDifficulty: " + Mathf.FloorToInt(__instance.GlobalDifficulty));
-
-                    // Set
-                    baseDiff = overrideBaseDiff;
-                    Logger.LogLine("[SimGameState_GetDifficultyRangeForContract_PREFIX] baseDiff overridden with: " + overrideBaseDiff);
-                }
-                */
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e);
-            }
+            // Skip original method as it would override minDiff/maxDiff again (of course)
+            return false;
         }
     }
 
@@ -165,6 +145,7 @@ namespace MadLabs.Patches
             Logger.LogLine("[StarSystem_GetSystemMaxContracts_POSTFIX] StarSystem.Sim.Constants.Story.MaxContractsPerSystem: " + __instance.Sim.Constants.Story.MaxContractsPerSystem);
         }
     }
+
     [HarmonyPatch(typeof(SimGameState), "GetAllCurrentlySelectableContracts")]
     public static class SimGameState_GetAllCurrentlySelectableContracts_Patch
     {
@@ -172,6 +153,8 @@ namespace MadLabs.Patches
         {
             try
             {
+                Logger.LogLine("----------------------------------------------------------------------------------------------------");
+
                 // Campaign
                 //int currentSystemDifficulty = __instance.CurSystem.Def.GetDifficulty(SimGameState.SimGameType.KAMEA_CAMPAIGN);
                 // Career
@@ -180,13 +163,19 @@ namespace MadLabs.Patches
                 int currentSystemDifficulty = __instance.CurSystem.Def.GetDifficulty(__instance.SimGameMode);
                 int globalDifficulty = Mathf.FloorToInt(__instance.GlobalDifficulty);
                 int baseDifficulty = currentSystemDifficulty + globalDifficulty;
-                int contractDifficultyVariance = __instance.Constants.Story.ContractDifficultyVariance;
-                int minDifficulty = Mathf.Max(1, baseDifficulty - contractDifficultyVariance);
-                int maxDifficulty = Mathf.Max(1, baseDifficulty + contractDifficultyVariance);
+                //int contractDifficultyVariance = __instance.Constants.Story.ContractDifficultyVariance;
+                //int minDifficulty = Mathf.Max(1, baseDifficulty - contractDifficultyVariance);
+                //int maxDifficulty = Mathf.Max(1, baseDifficulty + contractDifficultyVariance);
+                int[] contractDifficultyVariances = Utilities.GetMaxAllowedContractDifficultyVariances(__instance.SimGameMode, __instance.CompanyTags);
+                int minDifficulty = Mathf.Max(1, baseDifficulty - contractDifficultyVariances[0]);
+                int maxDifficulty = Mathf.Max(1, baseDifficulty + contractDifficultyVariances[1]);
+
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] currentSystemDifficulty: " + currentSystemDifficulty);
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] globalDifficulty: " + globalDifficulty);
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] baseDifficulty: " + baseDifficulty);
-                Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] contractDifficultyVariance: " + contractDifficultyVariance);
+                //Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] contractDifficultyVariance: " + contractDifficultyVariance);
+                Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] contractDifficultyVariances[0]: " + contractDifficultyVariances[0]);
+                Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] contractDifficultyVariances[1]: " + contractDifficultyVariances[1]);
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] minDifficulty: " + minDifficulty);
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] maxDifficulty: " + maxDifficulty);
 

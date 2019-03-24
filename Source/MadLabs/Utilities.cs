@@ -8,6 +8,34 @@ namespace MadLabs
 {
     class Utilities
     {
+        public static int[] GetMaxAllowedContractDifficultyVariances(SimGameState.SimGameType gameMode, TagSet companyTags)
+        {
+            //Logger.LogLine("[Utilities.GetMaxAllowedContractDifficultyVariance] companyTags: " + companyTags);
+
+            if (gameMode == SimGameState.SimGameType.CAREER)
+            {
+                return new int[] { 1, 1 };
+            }
+
+            //SimGameState.SimGameType.KAMEA_CAMPAIGN
+            if (companyTags.Contains("oc14_post_armistice"))
+            {
+                return new int[] { 6, 3 };
+            }
+            else if (companyTags.Contains("oc09_post_damage_report"))
+            {
+                return new int[] { 4, 2 };
+            }
+            else if (companyTags.Contains("oc04_post_argo"))
+            {
+                return new int[] { 2, 1 };
+            }
+            else
+            {
+                return new int[] { 1, 1 };
+            }
+        }
+
         public static int GetMaxAllowedContractDifficultyVariance(SimGameState.SimGameType gameMode, TagSet companyTags)
         {
             Logger.LogLine("[Utilities.GetMaxAllowedContractDifficultyVariance] companyTags: " + companyTags);
