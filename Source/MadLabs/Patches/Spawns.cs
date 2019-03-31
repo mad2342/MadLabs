@@ -28,7 +28,8 @@ namespace MadLabs.Patches
 
                 // @ToDo: Play around with this. Should also allow multiple +++ Units on 2 skull constracts in late game...
                 Fields.CurrentContractTotalThreatLevel = 0;
-                Fields.MaxAllowedTotalThreatLevelPerContract = __instance.Difficulty;
+                //Fields.MaxAllowedTotalThreatLevelPerContract = __instance.Difficulty;
+                Fields.MaxAllowedTotalThreatLevelPerContract = (int)simGameState.GlobalDifficulty;
 
                 Fields.MaxAllowedExtraThreatLevelByProgression = Utilities.GetMaxAllowedExtraThreatLevelByProgression(simGameState.DaysPassed, simGameState.CompanyTags);
                 Fields.MaxAllowedMadlabsUnitsPerLance = Utilities.GetMaxAllowedMadlabsUnitsByProgression(simGameState.GlobalDifficulty);

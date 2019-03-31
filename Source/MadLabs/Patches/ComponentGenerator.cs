@@ -13,11 +13,12 @@ namespace MadLabs.Patches
 
         public static void Postfix(SimGameState __instance, StatCollection ___companyStats)
         {
-            string[] MechsToAdd = new string[] { "mechdef_dragon_DRG-1N", "mechdef_griffin_GRF-1S", "mechdef_thunderbolt_TDR-5SE" };
-            string[] WeaponsToAdd = new string[] { "Weapon_Gauss_Gauss_0-STOCK", "Weapon_Gauss_Gauss_1-M7", "Weapon_Gauss_Gauss_2-M9" };
-            string[] UpgradesToAdd = new string[] { "Gear_Actuator_Coventry_B60-Extended", "Gear_Actuator_Friedhof_Colossus", "Gear_Actuator_Pitban_Kangaroo" };
-            string[] HeatsinksToAdd = new string[] { "Gear_HeatSink_Generic_Double", "Gear_HeatSink_Generic_Thermal-Exchanger-III" };
-            int fundsToAdd = 10000000;
+            string[] MechsToAdd = new string[] { "mechdef_orion_ON2-Mb" };
+            string[] WeaponsToAdd = new string[] { "Weapon_Gauss_Gauss_0-STOCK" };
+            string[] UpgradesToAdd = new string[] { "Gear_TargetingTrackingSystem_RCA_InstaTrac-XII" };
+            string[] HeatsinksToAdd = new string[] { "Gear_HeatSink_Generic_Double" };
+            string[] AmmoToAdd = new string[] { "Ammo_AmmunitionBox_Generic_GAUSS" };
+            int fundsToAdd = 1000000;
             int amount = 3;
 
             foreach (string Id in MechsToAdd)
@@ -53,6 +54,17 @@ namespace MadLabs.Patches
                 while (i < num)
                 {
                     __instance.AddItemStat(Id, typeof(HeatSinkDef), false);
+                    i++;
+                }
+                Logger.LogLine("[SimGameState__OnAttachUXComplete_POSTFIX] Added " + Id + "(" + num + ") to inventory.");
+            }
+            foreach (string Id in AmmoToAdd)
+            {
+                int num = amount;
+                int i = 0;
+                while (i < num)
+                {
+                    __instance.AddItemStat(Id, typeof(AmmunitionBoxDef), false);
                     i++;
                 }
                 Logger.LogLine("[SimGameState__OnAttachUXComplete_POSTFIX] Added " + Id + "(" + num + ") to inventory.");

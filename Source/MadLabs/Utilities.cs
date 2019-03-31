@@ -18,7 +18,7 @@ namespace MadLabs
             }
 
             //SimGameState.SimGameType.KAMEA_CAMPAIGN
-            if (companyTags.Contains("oc14_post_armistice"))
+            if (companyTags.Contains("story_complete"))
             {
                 return new int[] { 6, 3 };
             }
@@ -39,7 +39,7 @@ namespace MadLabs
         public static int GetMaxAllowedContractDifficultyVariance(SimGameState.SimGameType gameMode, TagSet companyTags)
         {
             Logger.LogLine("[Utilities.GetMaxAllowedContractDifficultyVariance] companyTags: " + companyTags);
-            if (companyTags.Contains("oc14_post_armistice"))
+            if (companyTags.Contains("story_complete"))
             {
                 return 6;
             }
@@ -81,7 +81,7 @@ namespace MadLabs
 
         public static int GetMaxAllowedExtraThreatLevelByProgression(int daysPassed, TagSet companyTags)
         {
-            if (companyTags.Contains("oc14_post_armistice") || daysPassed > 900)
+            if (companyTags.Contains("story_complete") || daysPassed > 900)
             {
                 return 3;
             }
