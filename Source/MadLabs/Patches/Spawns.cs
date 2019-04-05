@@ -27,6 +27,7 @@ namespace MadLabs.Patches
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.GlobalDifficulty: " + simGameState.GlobalDifficulty);
 
                 // @ToDo: Play around with this. Should also allow multiple +++ Units on 2 skull constracts in late game...
+                // NOTE that the Difficulty Settings "Enemy Force Strength" directly modifies GlobalDifficulty(!) with -1|+1 if set != Normal
                 Fields.CurrentContractTotalThreatLevel = 0;
                 //Fields.MaxAllowedTotalThreatLevelPerContract = __instance.Difficulty;
                 Fields.MaxAllowedTotalThreatLevelPerContract = (int)simGameState.GlobalDifficulty;
@@ -35,6 +36,8 @@ namespace MadLabs.Patches
                 Fields.MaxAllowedMadlabsUnitsPerLance = Utilities.GetMaxAllowedMadlabsUnitsByProgression(simGameState.GlobalDifficulty);
                 Logger.LogLine("[Contract_Begin_PREFIX] Fields.MaxAllowedExtraThreatLevelByProgression: " + Fields.MaxAllowedExtraThreatLevelByProgression);
                 Logger.LogLine("[Contract_Begin_PREFIX] Fields.MaxAllowedMadlabsUnitsPerLance: " + Fields.MaxAllowedMadlabsUnitsPerLance);
+
+                Fields.GlobalDifficulty = (int)simGameState.GlobalDifficulty;
 
                 /*
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.CompanyTags: " + simGameState.CompanyTags);
@@ -135,6 +138,20 @@ namespace MadLabs.Patches
                             Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] Fields.MaxAllowedExtraThreatLevelByProgression: " + Fields.MaxAllowedExtraThreatLevelByProgression);
                             int allowedExtraThreatLevel = Math.Min(Fields.MaxAllowedExtraThreatLevelByProgression, remainingAllowedExtraThreatLevelForContract);
                             Logger.LogLine("[UnitSpawnPointOverride_GenerateUnit_POSTFIX] allowedExtraThreatLevel: " + allowedExtraThreatLevel);
+
+
+
+                            // Limit triple PPP Units to X per contract
+                            if (selectedMechsExtraThreatLevel >= 3 && allowedExtraThreatLevel >= 3)
+                            {
+                                Fields.CurrentContractPlusPlusPlusUnits += 1;
+                            }
+                            if (Fields.CurrentContractPlusPlusPlusUnits > Fields.MaxAllowedPlusPlusPlusUnitsPerContract)
+                            {
+                                allowedExtraThreatLevel = 2;
+                            }
+
+
 
                             if (selectedMechsExtraThreatLevel > allowedExtraThreatLevel)
                             {

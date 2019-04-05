@@ -590,7 +590,7 @@ namespace MadLabs.Extensions
                 // Tag MechDef according to threatLevel/equipment
                 //string additionalTag = Utilities.TagMechDefAccordingToInventory(mechDefInventory);
                 int threatLevel = Utilities.GetExtraThreatLevelFromMechDef(mechDef, true);
-                string additionalTag = Utilities.GetMechTagAccordingToExtraThreatlevel(threatLevel);
+                string additionalTag = Utilities.GetMechTagForThreatLevel(threatLevel);
 
 
                 Logger.LogLine("[Extensions.ExportCurrentMechDefToJson] additionalTag: " + additionalTag);

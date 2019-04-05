@@ -36,6 +36,7 @@ namespace MadLabs
             }
         }
 
+        // Deprecated
         public static int GetMaxAllowedContractDifficultyVariance(SimGameState.SimGameType gameMode, TagSet companyTags)
         {
             Logger.LogLine("[Utilities.GetMaxAllowedContractDifficultyVariance] companyTags: " + companyTags);
@@ -59,6 +60,7 @@ namespace MadLabs
 
         public static int GetMaxAllowedMadlabsUnitsByProgression(float globalDifficulty)
         {
+            // A global difficulty of 9+ is only possible with setting "Enemy Force Strength" to "Hard" in Game Options
             int d = (int)globalDifficulty;
 
             if (d >= 9)
@@ -244,6 +246,7 @@ namespace MadLabs
             return result;
         }
 
+        // Deprecated
         public static string GetMechTagAccordingToExtraThreatlevel(int threatLevel)
         {
             switch(threatLevel)
@@ -330,6 +333,7 @@ namespace MadLabs
                 if (MechTags.Contains("unit_role_brawler"))
                 {
                     appropiatePilots.Add("pilot_madlabs_brawler");
+                    appropiatePilots.Add("pilot_madlabs_skirmisher");
                 }
                 if (MechTags.Contains("unit_role_sniper"))
                 {
