@@ -457,7 +457,7 @@
                             ],
                             "tagSetSourceFile" : "Tags/SpawnEffectTags"
                         },
-                        "pilotDefId" : "pilot_madlabs_lancer",
+                        "pilotDefId" : "pilot_d11_lancer",
                         "pilotTagSet" : {
                             "items" : [
                                 

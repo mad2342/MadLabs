@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using BattleTech;
 using BattleTech.Data;
 using HBS.Collections;
@@ -107,6 +109,13 @@ namespace MadLabs
 
             Logger.LogLine("[Utilities.GetMechDefIdBasedOnSameChassis] Get replacement for chassisID: " + chassisID + " and threatLevel: " + threatLevel);
 
+            // Shortcut for STOCK
+            if (threatLevel == 0)
+            {
+                Logger.LogLine("[Utilities.GetMechDefIdBasedOnSameChassis] Requested threatlevel is 0. Returning STOCK variant...");
+                return chassisID.Replace("chassisdef", "mechdef");
+            }
+
             string mechTagForThreatLevel = Utilities.GetMechTagForThreatLevel(threatLevel);
             Logger.LogLine("[Utilities.GetMechDefIdBasedOnSameChassis] mechTagForThreatLevel: " + mechTagForThreatLevel);
 
@@ -136,7 +145,7 @@ namespace MadLabs
             }
             else
             {
-                Logger.LogLine("[Utilities.GetMechDefIdBasedOnSameChassis] Couldn't find a replacement. Falling back to stock...");
+                Logger.LogLine("[Utilities.GetMechDefIdBasedOnSameChassis] Couldn't find a replacement. Falling back to STOCK...");
                 replacementMechDefId = chassisID.Replace("chassisdef", "mechdef");
             }
 
@@ -262,15 +271,25 @@ namespace MadLabs
             }
         }
 
-        public static string GetPilotIdForMechDef(MechDef mechDef)
+        public static string GetPilotTypeForMechDef(MechDef mechDef, bool random = false)
         {
-            string pilotId = "pilot_madlabs_lancer";
+            string pilotType = "lancer";
             TagSet MechTags = mechDef.MechTags;
-            List<string> appropiatePilots = new List<string>();
+            List<string> availablePilotTypes = new List<string>() { "skirmisher", "lancer", "sharpshooter", "flanker", "outrider", "recon", "gladiator", "brawler", "sentinel", "striker", "scout", "vanguard" };
+            List<string> appropiatePilotTypes = new List<string>();
+
+            if(random)
+            {
+                Random rnd = new Random();
+                int r = rnd.Next(availablePilotTypes.Count);
+
+                Logger.LogLine("[Utilities.GetPilotTypeForMechDef] Returning random pilotType: " + availablePilotTypes[r]);
+                return availablePilotTypes[r];
+            }
 
             if (!MechTags.IsEmpty)
             {
-                Logger.LogLine("[Utilities.GetPilotIdForMechDef] MechTags: " + MechTags);
+                Logger.LogLine("[Utilities.GetPilotTypeForMechDef] MechTags: " + MechTags);
 
                 // unit_lance_support, unit_lance_tank, unit_lance_assassin, unit_lance_vanguard
                 // unit_role_brawler, unit_role_sniper, unit_role_scout
@@ -279,99 +298,187 @@ namespace MadLabs
                 // By logical combination
                 if (MechTags.Contains("unit_lance_support") && MechTags.Contains("unit_role_brawler"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_vanguard");
+                    appropiatePilotTypes.Add("vanguard");
                 }
                 if (MechTags.Contains("unit_lance_support") && MechTags.Contains("unit_role_sniper"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_sharpshooter");
+                    appropiatePilotTypes.Add("sharpshooter");
                 }
                 if (MechTags.Contains("unit_lance_support") && MechTags.Contains("unit_role_scout"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_recon");
+                    appropiatePilotTypes.Add("recon");
                 }
 
                 if (MechTags.Contains("unit_lance_tank") && MechTags.Contains("unit_role_brawler"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_gladiator");
+                    appropiatePilotTypes.Add("gladiator");
                 }
                 if (MechTags.Contains("unit_lance_tank") && MechTags.Contains("unit_role_sniper"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_lancer");
+                    appropiatePilotTypes.Add("lancer");
                 }
                 if (MechTags.Contains("unit_lance_tank") && MechTags.Contains("unit_role_scout"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_outrider");
+                    appropiatePilotTypes.Add("outrider");
                 }
 
                 if (MechTags.Contains("unit_lance_assassin") && MechTags.Contains("unit_role_brawler"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_brawler");
+                    appropiatePilotTypes.Add("brawler");
                 }
                 if (MechTags.Contains("unit_lance_assassin") && MechTags.Contains("unit_role_sniper"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_skirmisher");
+                    appropiatePilotTypes.Add("skirmisher");
                 }
                 if (MechTags.Contains("unit_lance_assassin") && MechTags.Contains("unit_role_scout"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_flanker");
+                    appropiatePilotTypes.Add("flanker");
                 }
 
                 if (MechTags.Contains("unit_lance_vanguard") && MechTags.Contains("unit_role_brawler"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_scout");
+                    appropiatePilotTypes.Add("scout");
                 }
                 if (MechTags.Contains("unit_lance_vanguard") && MechTags.Contains("unit_role_sniper"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_striker");
+                    appropiatePilotTypes.Add("striker");
                 }
                 if (MechTags.Contains("unit_lance_vanguard") && MechTags.Contains("unit_role_scout"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_sentinel");
+                    appropiatePilotTypes.Add("sentinel");
                 }
 
                 // Add variety by single roles
                 if (MechTags.Contains("unit_role_brawler"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_brawler");
-                    appropiatePilots.Add("pilot_madlabs_skirmisher");
+                    appropiatePilotTypes.Add("lancer");
+                    appropiatePilotTypes.Add("skirmisher");
                 }
                 if (MechTags.Contains("unit_role_sniper"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_sharpshooter");
+                    appropiatePilotTypes.Add("sharpshooter");
                 }
                 if (MechTags.Contains("unit_role_scout"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_recon");
-                    appropiatePilots.Add("pilot_madlabs_scout");
+                    appropiatePilotTypes.Add("recon");
+                    appropiatePilotTypes.Add("scout");
                 }
 
                 // Add variety by special tags
                 if (MechTags.Contains("unit_indirectFire"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_vanguard");
-                    appropiatePilots.Add("pilot_madlabs_striker");
+                    appropiatePilotTypes.Add("vanguard");
+                    appropiatePilotTypes.Add("striker");
                 }
 
                 // Add variety by Chassis
                 if (mechDef.ChassisID.Contains("hatchetman") || mechDef.ChassisID.Contains("dragon") || mechDef.ChassisID.Contains("banshee"))
                 {
-                    appropiatePilots.Add("pilot_madlabs_brawler");
-                    appropiatePilots.Add("pilot_madlabs_gladiator");
+                    appropiatePilotTypes.Add("brawler");
+                    appropiatePilotTypes.Add("gladiator");
                 }
             }
 
-            if (appropiatePilots.Count > 0)
+            if (appropiatePilotTypes.Count > 0)
             {
-                foreach (string Id in appropiatePilots)
+                foreach (string Type in appropiatePilotTypes)
                 {
-                    Logger.LogLine("[Utilities.GetPilotIdForMechDef] appropiatePilots: " + Id);
+                    Logger.LogLine("[Utilities.GetPilotTypeForMechDef] appropiatePilotTypes: " + Type);
                 }
-                appropiatePilots.Shuffle<string>();
-                pilotId = appropiatePilots[0];
+                appropiatePilotTypes.Shuffle<string>();
+                pilotType = appropiatePilotTypes[0];
             }
-            Logger.LogLine("[Utilities.GetPilotIdForMechDef] Selected pilotId: " + pilotId);
+            Logger.LogLine("[Utilities.GetPilotTypeForMechDef] Selected pilotType: " + pilotType);
 
-            return pilotId;
+            return pilotType;
+        }
+
+        public static int GetPilotSkillLevel(TagSet pilotTagSet)
+        {
+            if (pilotTagSet.Contains("pilot_npc_d10"))
+            {
+                return 10;
+            }
+            if (pilotTagSet.Contains("pilot_npc_d9"))
+            {
+                return 9;
+            }
+            if (pilotTagSet.Contains("pilot_npc_d8"))
+            {
+                return 8;
+            }
+            if (pilotTagSet.Contains("pilot_npc_d7"))
+            {
+                return 7;
+            }
+            if (pilotTagSet.Contains("pilot_npc_d6"))
+            {
+                return 6;
+            }
+            if (pilotTagSet.Contains("pilot_npc_d5"))
+            {
+                return 5;
+            }
+            if (pilotTagSet.Contains("pilot_npc_d4"))
+            {
+                return 4;
+            }
+            if (pilotTagSet.Contains("pilot_npc_d3"))
+            {
+                return 3;
+            }
+            if (pilotTagSet.Contains("pilot_npc_d2"))
+            {
+                return 2;
+            }
+            if (pilotTagSet.Contains("pilot_npc_d1"))
+            {
+                return 1;
+            }
+            // Default
+            return 7;
+        }
+
+        public static string BuildPilotDefIdFromSkillAndSpec(int skillLevel, string pilotSpecialization)
+        {
+            return "pilot_d" + skillLevel + "_" + pilotSpecialization;
+        }
+
+        public static string GetPilotIdForMechDef(MechDef mechDef, string currentPilotDefId, TagSet currentPilotTagSet, int threatLevel, float globalDifficulty)
+        {
+            // If no replacement is appropiate fall back to original PilotDef
+            string replacementPilotDefId = currentPilotDefId;
+            int currentSkillLevel = Utilities.GetPilotSkillLevel(currentPilotTagSet);
+            Logger.LogLine("[Utilities.GetPilotIdForMechDef] currentSkillLevel" + currentSkillLevel);
+
+            int requestedSkillLevel = 0;
+            switch (threatLevel)
+            {
+                case 0:
+                    requestedSkillLevel = (int)globalDifficulty;
+                    break;
+                case 1:
+                    requestedSkillLevel = 9;
+                    break;
+                case 2:
+                    requestedSkillLevel = 10;
+                    break;
+                case 3:
+                    requestedSkillLevel = 11;
+                    break;
+            }
+            Logger.LogLine("[Utilities.GetPilotIdForMechDef] requestedSkillLevel: " + requestedSkillLevel);
+
+            // Specialization starts at difficulty of 7
+            if (requestedSkillLevel > 7 && requestedSkillLevel > currentSkillLevel)
+            {
+                string pilotSpecialization = Utilities.GetPilotTypeForMechDef(mechDef);
+                Logger.LogLine("[Utilities.GetPilotIdForMechDef] pilotSpecialization: " + pilotSpecialization);
+                replacementPilotDefId = Utilities.BuildPilotDefIdFromSkillAndSpec(requestedSkillLevel, pilotSpecialization);
+            }
+
+            Logger.LogLine("[Utilities.GetPilotIdForMechDef] replacementPilotDefId: " + replacementPilotDefId);
+            return replacementPilotDefId;
         }
 
 

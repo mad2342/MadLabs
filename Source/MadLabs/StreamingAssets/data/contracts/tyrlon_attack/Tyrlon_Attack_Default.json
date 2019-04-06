@@ -774,7 +774,7 @@
                             ],
                             "tagSetSourceFile" : "Tags/SpawnEffectTags"
                         },
-                        "pilotDefId" : "pilot_madlabs_striker",
+                        "pilotDefId" : "pilot_d11_striker",
                         "pilotTagSet" : {
                             "items" : [
                                 

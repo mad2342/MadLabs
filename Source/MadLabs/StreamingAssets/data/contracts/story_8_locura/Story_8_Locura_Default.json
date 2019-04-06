@@ -725,7 +725,7 @@
                             ],
                             "tagSetSourceFile" : "Tags/SpawnEffectTags"
                         },
-                        "pilotDefId" : "pilot_madlabs_brawler",
+                        "pilotDefId" : "pilot_d12_brawler",
                         "pilotTagSet" : {
                             "items" : [
                                 

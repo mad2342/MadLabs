@@ -1231,7 +1231,7 @@
                             ],
                             "tagSetSourceFile" : "Tags/SpawnEffectTags"
                         },
-                        "pilotDefId" : "pilot_madlabs_flanker",
+                        "pilotDefId" : "pilot_d11_flanker",
                         "pilotTagSet" : {
                             "items" : [
                                 

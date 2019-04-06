@@ -1,0 +1,63 @@
+{
+    "Description": {
+        "Id": "pilot_d11_sentinel",
+        "Name": "Ace Sentinel",
+        "FirstName": "Ace Sentinel",
+        "LastName": "NONE",
+        "Callsign": "Ace Sentinel",
+        "Gender": "Female",
+        "Faction": "Davion",
+        "Age": 30,
+        "Details": "NONE",
+        "Icon": "Wildfire"
+    },
+    "BaseGunnery": "8",
+    "BonusGunnery": 0,
+    "BasePiloting": "8",
+    "BonusPiloting": 0,
+    "BaseGuts": "10",
+    "BonusGuts": 0,
+    "BaseTactics": "9",
+    "BonusTactics": 0,
+    "ExperienceUnspent": 0,
+    "ExperienceSpent": 0,
+    "Injuries": 0,
+    "Health": 3,
+    "LethalInjury": false,
+    "Incapacitated": false,
+    "Morale": 0,
+    "Voice": "f_overload01",
+    "abilityDefNames": [
+        "AbilityDefGu5",
+        "AbilityDefGu8",
+        "AbilityDefT5A",
+		"TraitDefCalledShotImprove",
+		"TraitDefCalledShotMaster",
+		"TraitDefEvasiveChargeAddOne",
+		"TraitDefHealthAddOne",
+        "TraitDefHealthAddTwo",
+		"TraitDefHealthAddThree",
+		"TraitDefIndirectReduceOne",
+		"TraitDefIndirectReduceTwo",
+		"TraitDefMinRangeReduce45",
+		"TraitDefMinRangeReduce90",
+		"TraitDefOverheatAddFifteen",
+		"TraitDefOverheatAddThirty",
+		"TraitDefRefireReduceOne",
+		"TraitDefRefireReduceTwo",
+		"TraitDefSprintIncrease10",
+		"TraitDefSprintIncrease20",
+		"TraitDefUnsteadySet60"
+    ],
+    "AIPersonality": "Undefined",
+    "PilotTags": {
+        "items": [
+            "pilot_npc_sentinel",
+            "pilot_npc_dynamic",
+			"pilot_npc_d11",
+			"pilot_npc_madlabs"
+        ],
+        "tagSetSourceFile": ""
+    },
+    "PilotCost": 0
+}

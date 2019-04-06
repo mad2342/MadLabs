@@ -1,10 +1,10 @@
 {
     "Description": {
-        "Id": "pilot_madlabs_sharpshooter",
-        "Name": "Master Sharpshooter",
-        "FirstName": "Master Sharpshooter",
+        "Id": "pilot_d12_scout",
+        "Name": "Master Scout",
+        "FirstName": "Master Scout",
         "LastName": "NONE",
-        "Callsign": "Master Sharpshooter",
+        "Callsign": "Master Scout",
         "Gender": "Female",
         "Faction": "Davion",
         "Age": 30,
@@ -13,7 +13,7 @@
     },
     "BaseGunnery": "10",
     "BonusGunnery": 0,
-    "BasePiloting": "9",
+    "BasePiloting": "10",
     "BonusPiloting": 0,
     "BaseGuts": "10",
     "BonusGuts": 0,
@@ -28,12 +28,13 @@
     "Morale": 0,
     "Voice": "f_overload01",
     "abilityDefNames": [
-        "AbilityDefG5",
-        "AbilityDefG8",
         "AbilityDefT5A",
+        "AbilityDefT8A",
+        "AbilityDefP5",
 		"TraitDefCalledShotImprove",
 		"TraitDefCalledShotMaster",
 		"TraitDefEvasiveChargeAddOne",
+		"TraitDefEvasiveChargeAddTwo",
 		"TraitDefHealthAddOne",
         "TraitDefHealthAddTwo",
 		"TraitDefHealthAddThree",
@@ -54,9 +55,9 @@
     "AIPersonality": "Undefined",
     "PilotTags": {
         "items": [
-            "pilot_npc_sharpshooter",
+            "pilot_npc_scout",
             "pilot_npc_dynamic",
-			"pilot_npc_d11",
+			"pilot_npc_d12",
 			"pilot_npc_madlabs"
         ],
         "tagSetSourceFile": ""
