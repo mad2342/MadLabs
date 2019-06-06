@@ -13,9 +13,9 @@ namespace MadLabs.Patches
 
         public static void Postfix(SimGameState __instance, StatCollection ___companyStats)
         {
-            string[] MechsToAdd = new string[] { "mechdef_orion_ON2-Mb" };
+            string[] MechsToAdd = new string[] { "mechdef_kintaro_KTO-19b" };
             string[] WeaponsToAdd = new string[] { "Weapon_Gauss_Gauss_0-STOCK" };
-            string[] UpgradesToAdd = new string[] { "Gear_TargetingTrackingSystem_RCA_InstaTrac-XII" };
+            string[] UpgradesToAdd = new string[] { "Gear_Cockpit_StarCorps_Advanced" };
             string[] HeatsinksToAdd = new string[] { "Gear_HeatSink_Generic_Double" };
             string[] AmmoToAdd = new string[] { "Ammo_AmmunitionBox_Generic_GAUSS" };
             int fundsToAdd = 1000000;

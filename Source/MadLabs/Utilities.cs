@@ -5,15 +5,46 @@ using System.Text.RegularExpressions;
 using BattleTech;
 using BattleTech.Data;
 using HBS.Collections;
+using UnityEngine;
 
 namespace MadLabs
 {
     class Utilities
     {
+        public static int GetNormalizedGlobalDifficulty(SimGameState simGameState)
+        {
+            if (simGameState.SimGameMode == SimGameState.SimGameType.KAMEA_CAMPAIGN)
+            {
+                return Mathf.FloorToInt(simGameState.GlobalDifficulty);
+            }
+            else if (simGameState.SimGameMode == SimGameState.SimGameType.CAREER)
+            {
+                int daysPassed = simGameState.DaysPassed;
+                Logger.LogLine("[Utilities.GetNormalizedGlobalDifficulty] daysPassed: " + daysPassed);
+
+                int difficulty = Mathf.FloorToInt(daysPassed / 100);
+                Logger.LogLine("[Utilities.GetNormalizedGlobalDifficulty] difficulty: " + difficulty);
+
+                int settingsModifier = simGameState.Constants.Story.ContractDifficultyMod;
+                Logger.LogLine("[Utilities.GetNormalizedGlobalDifficulty] settingsModifier: " + settingsModifier);
+
+                //@ToDo: Add/Substract modifiers from difficulty settings ("Enemy Force Strength": -1|0|+1)
+                difficulty += settingsModifier;
+
+                return Mathf.Clamp(difficulty, 0, 8);
+            }
+            else
+            {
+                Logger.LogLine("[Utilities.GetNormalizedGlobalDifficulty] WARNING: Couldn't determine normalized difficulty!");
+                return 0;
+            }
+        }
+
         public static int[] GetMaxAllowedContractDifficultyVariances(SimGameState.SimGameType gameMode, TagSet companyTags)
         {
             //Logger.LogLine("[Utilities.GetMaxAllowedContractDifficultyVariance] companyTags: " + companyTags);
 
+            // For CAREER mode ContractDifficulty is based purely on starsystem atm...
             if (gameMode == SimGameState.SimGameType.CAREER)
             {
                 return new int[] { 1, 1 };
@@ -38,42 +69,18 @@ namespace MadLabs
             }
         }
 
-        // Deprecated
-        public static int GetMaxAllowedContractDifficultyVariance(SimGameState.SimGameType gameMode, TagSet companyTags)
-        {
-            Logger.LogLine("[Utilities.GetMaxAllowedContractDifficultyVariance] companyTags: " + companyTags);
-            if (companyTags.Contains("story_complete"))
-            {
-                return 6;
-            }
-            else if (companyTags.Contains("oc09_post_damage_report"))
-            {
-                return 4;
-            }
-            else if (companyTags.Contains("oc04_post_argo"))
-            {
-                return 2;
-            }
-            else
-            {
-                return 1;
-            }
-        }
-
-        public static int GetMaxAllowedMadlabsUnitsByProgression(float globalDifficulty)
+        public static int GetMaxAllowedMadlabsUnitsByProgression(int globalDifficulty)
         {
             // A global difficulty of 9+ is only possible with setting "Enemy Force Strength" to "Hard" in Game Options
-            int d = (int)globalDifficulty;
-
-            if (d >= 9)
+            if (globalDifficulty >= 9)
             {
                 return 3;
             }
-            else if (d >= 7)
+            else if (globalDifficulty >= 7)
             {
              return 2;
             }
-            else if (d >= 4)
+            else if (globalDifficulty >= 4)
             {
                 return 1;
             }
@@ -280,7 +287,7 @@ namespace MadLabs
 
             if(random)
             {
-                Random rnd = new Random();
+                System.Random rnd = new System.Random();
                 int r = rnd.Next(availablePilotTypes.Count);
 
                 Logger.LogLine("[Utilities.GetPilotTypeForMechDef] Returning random pilotType: " + availablePilotTypes[r]);
@@ -444,27 +451,27 @@ namespace MadLabs
             return "pilot_d" + skillLevel + "_" + pilotSpecialization;
         }
 
-        public static string GetPilotIdForMechDef(MechDef mechDef, string currentPilotDefId, TagSet currentPilotTagSet, int threatLevel, float globalDifficulty)
+        public static string GetPilotIdForMechDef(MechDef mechDef, string currentPilotDefId, TagSet currentPilotTagSet, int threatLevel, int minimumSkillLevel)
         {
             // If no replacement is appropiate fall back to original PilotDef
             string replacementPilotDefId = currentPilotDefId;
             int currentSkillLevel = Utilities.GetPilotSkillLevel(currentPilotTagSet);
-            Logger.LogLine("[Utilities.GetPilotIdForMechDef] currentSkillLevel" + currentSkillLevel);
+            Logger.LogLine("[Utilities.GetPilotIdForMechDef] currentSkillLevel: " + currentSkillLevel);
 
             int requestedSkillLevel = 0;
             switch (threatLevel)
             {
                 case 0:
-                    requestedSkillLevel = (int)globalDifficulty;
+                    requestedSkillLevel = minimumSkillLevel;
                     break;
                 case 1:
-                    requestedSkillLevel = 9;
-                    break;
-                case 2:
                     requestedSkillLevel = 10;
                     break;
-                case 3:
+                case 2:
                     requestedSkillLevel = 11;
+                    break;
+                case 3:
+                    requestedSkillLevel = 12;
                     break;
             }
             Logger.LogLine("[Utilities.GetPilotIdForMechDef] requestedSkillLevel: " + requestedSkillLevel);

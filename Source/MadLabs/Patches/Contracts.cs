@@ -163,17 +163,19 @@ namespace MadLabs.Patches
                 int currentSystemDifficulty = __instance.CurSystem.Def.GetDifficulty(__instance.SimGameMode);
                 int globalDifficulty = Mathf.FloorToInt(__instance.GlobalDifficulty);
                 int baseDifficulty = currentSystemDifficulty + globalDifficulty;
-                //int contractDifficultyVariance = __instance.Constants.Story.ContractDifficultyVariance;
-                //int minDifficulty = Mathf.Max(1, baseDifficulty - contractDifficultyVariance);
-                //int maxDifficulty = Mathf.Max(1, baseDifficulty + contractDifficultyVariance);
                 int[] contractDifficultyVariances = Utilities.GetMaxAllowedContractDifficultyVariances(__instance.SimGameMode, __instance.CompanyTags);
                 int minDifficulty = Mathf.Max(1, baseDifficulty - contractDifficultyVariances[0]);
                 int maxDifficulty = Mathf.Max(1, baseDifficulty + contractDifficultyVariances[1]);
 
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] currentSystemDifficulty: " + currentSystemDifficulty);
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] globalDifficulty: " + globalDifficulty);
+
+                Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] ---");
+                int normalizedDifficulty = Utilities.GetNormalizedGlobalDifficulty(__instance);
+                Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] normalizedDifficulty: " + normalizedDifficulty);
+                Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] ---");
+
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] baseDifficulty: " + baseDifficulty);
-                //Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] contractDifficultyVariance: " + contractDifficultyVariance);
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] contractDifficultyVariances[0]: " + contractDifficultyVariances[0]);
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] contractDifficultyVariances[1]: " + contractDifficultyVariances[1]);
                 Logger.LogLine("[SimGameState_GetAllCurrentlySelectableContracts_POSTFIX] minDifficulty: " + minDifficulty);

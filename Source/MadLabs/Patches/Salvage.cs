@@ -45,11 +45,17 @@ namespace MadLabs.Patches
                 SimGameState simGameState = __instance.BattleTechGame.Simulation;
                 SimGameConstants simGameConstants = simGameState.Constants;
                 int contractDifficulty = __instance.Override.finalDifficulty;
+                
                 // Borrowed from Contract.AddWeaponToSalvage()
                 float keepInitialRareWeaponChance = ((float)contractDifficulty + simGameConstants.Salvage.VeryRareWeaponChance) / simGameConstants.Salvage.WeaponChanceDivisor;
-                
-                // Leave a minimum chance
-                keepInitialRareWeaponChance = keepInitialRareWeaponChance < Fields.KeepInitialRareWeaponChanceMin ? Fields.KeepInitialRareWeaponChanceMin : keepInitialRareWeaponChance;
+
+                // Leave a minimum chance...
+                // ...by static setting
+                //keepInitialRareWeaponChance = keepInitialRareWeaponChance < Fields.KeepInitialRareWeaponChanceMin ? Fields.KeepInitialRareWeaponChanceMin : keepInitialRareWeaponChance;
+                // ...by global difficulty
+                float keepInitialRareWeaponChanceMin = Fields.GlobalDifficulty / 100;
+                keepInitialRareWeaponChance = keepInitialRareWeaponChance < keepInitialRareWeaponChanceMin ? keepInitialRareWeaponChanceMin : keepInitialRareWeaponChance;
+
                 Logger.LogLine("[Contract_AddMechComponentToSalvage_PREFIX] keepInitialRareWeaponChance: " + keepInitialRareWeaponChance);
 
                 float keepInitialRareWeaponRoll = simGameState.NetworkRandom.Float(0f, 1f);

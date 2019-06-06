@@ -4,6 +4,7 @@ using BattleTech;
 using BattleTech.Data;
 using HBS.Collections;
 using BattleTech.Framework;
+using UnityEngine;
 
 namespace MadLabs.Patches
 {
@@ -26,26 +27,26 @@ namespace MadLabs.Patches
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.DaysPassed: " + simGameState.DaysPassed);
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.GlobalDifficulty: " + simGameState.GlobalDifficulty);
 
+                //Fields.GlobalDifficulty = (int)simGameState.GlobalDifficulty;
+                Fields.GlobalDifficulty = Utilities.GetNormalizedGlobalDifficulty(simGameState);
+                Logger.LogLine("[Contract_Begin_PREFIX] Fields.GlobalDifficulty: " + Fields.GlobalDifficulty);
+
                 // @ToDo: Play around with this. Should also allow multiple +++ Units on 2 skull constracts in late game...
                 // NOTE that the Difficulty Settings "Enemy Force Strength" directly modifies GlobalDifficulty(!) with -1|+1 if set != Normal
+                // NOTE that atm (1.5.X) GlobalDifficulty is always ZERO for CAREER mode!
                 Fields.CurrentContractTotalThreatLevel = 0;
                 //Fields.MaxAllowedTotalThreatLevelPerContract = __instance.Difficulty;
-                Fields.MaxAllowedTotalThreatLevelPerContract = (int)simGameState.GlobalDifficulty;
+                //Fields.MaxAllowedTotalThreatLevelPerContract = (int)simGameState.GlobalDifficulty;
+                Fields.MaxAllowedTotalThreatLevelPerContract = Mathf.Clamp(Fields.GlobalDifficulty, 0, 10);
 
                 Fields.CurrentContractPlusPlusPlusUnits = 0;
 
                 Fields.MaxAllowedExtraThreatLevelByProgression = Utilities.GetMaxAllowedExtraThreatLevelByProgression(simGameState.DaysPassed, simGameState.CompanyTags);
-                Fields.MaxAllowedMadlabsUnitsPerLance = Utilities.GetMaxAllowedMadlabsUnitsByProgression(simGameState.GlobalDifficulty);
+                Fields.MaxAllowedMadlabsUnitsPerLance = Utilities.GetMaxAllowedMadlabsUnitsByProgression(Fields.GlobalDifficulty);
                 Logger.LogLine("[Contract_Begin_PREFIX] Fields.MaxAllowedExtraThreatLevelByProgression: " + Fields.MaxAllowedExtraThreatLevelByProgression);
                 Logger.LogLine("[Contract_Begin_PREFIX] Fields.MaxAllowedMadlabsUnitsPerLance: " + Fields.MaxAllowedMadlabsUnitsPerLance);
 
-                Fields.GlobalDifficulty = (int)simGameState.GlobalDifficulty;
-
                 /*
-                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.CompanyTags: " + simGameState.CompanyTags);
-                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.DaysPassed: " + simGameState.DaysPassed);
-                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.GlobalDifficulty: " + simGameState.GlobalDifficulty);
-                Logger.LogLine("[Contract_Begin_PREFIX] simGameState.GetCurrentMechCount(): " + simGameState.GetCurrentMechCount(false));
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.IsCampaign: " + simGameState.IsCampaign);
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.isCareerMode(): " + simGameState.IsCareerMode());
                 Logger.LogLine("[Contract_Begin_PREFIX] simGameState.TargetSystem.Name: " + simGameState.TargetSystem.Name);
