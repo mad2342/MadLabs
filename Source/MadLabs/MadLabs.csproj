@@ -58,6 +58,7 @@
     <Compile Include="Patches\MechLab.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
