@@ -20,7 +20,7 @@
 ## Known issues
 * The inventory of the loaded MechDef does not properly implement the work-order meta
   * That means that if a programmatically placed component is removed via drag/drop you will pay again (instead of getting the money back)
-  * You pay for removal/install of a component even though it could have stayed at a specific location
+  * You pay for removal/install of a component even though it could just have stayed at its specific location
 
 ## Thanks
 * CptMoore

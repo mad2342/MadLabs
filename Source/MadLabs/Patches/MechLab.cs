@@ -6,6 +6,7 @@ using TMPro;
 using System.Linq;
 using System.Collections.Generic;
 using MadLabs.Extensions;
+using BattleTech.UI.TMProWrapper;
 
 namespace MadLabs.Patches
 {
@@ -25,7 +26,7 @@ namespace MadLabs.Patches
                     return;
                 }
 
-                TMP_InputField mechNickname = (TMP_InputField)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechNickname").GetValue(__instance);
+                HBS_InputField mechNickname = (HBS_InputField)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechNickname").GetValue(__instance);
                 string mechDefaultVariant = mechLabPanel.activeMechDef.Chassis.VariantName;
                 Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] mechDefaultVariant: " + mechDefaultVariant);
                 string currentNickname = mechNickname.text;
@@ -162,10 +163,10 @@ namespace MadLabs.Patches
 
                 Logger.LogLine("[MechLabMechInfoWidget_SetData_PREFIX] Disable text validation, expand character limit");
 
-                TMP_InputField mechNickname = (TMP_InputField)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechNickname").GetValue(__instance);
+                HBS_InputField mechNickname = (HBS_InputField)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechNickname").GetValue(__instance);
                 mechNickname.characterLimit = 20;
-                mechNickname.contentType = TMP_InputField.ContentType.Standard;
-                mechNickname.characterValidation = TMP_InputField.CharacterValidation.None;
+                mechNickname.contentType = HBS_InputField.ContentType.Standard;
+                mechNickname.characterValidation = HBS_InputField.CharacterValidation.None;
             }
             catch (Exception e)
             {

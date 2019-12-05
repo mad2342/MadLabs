@@ -35,8 +35,12 @@ namespace MadLabs.Patches
                 // NOTE that the Difficulty Settings "Enemy Force Strength" directly modifies GlobalDifficulty(!) with -1|+1 if set != Normal
                 // NOTE that atm (1.5.X) GlobalDifficulty is always ZERO for CAREER mode!
                 Fields.CurrentContractTotalThreatLevel = 0;
+                
                 //Fields.MaxAllowedTotalThreatLevelPerContract = __instance.Difficulty;
                 //Fields.MaxAllowedTotalThreatLevelPerContract = (int)simGameState.GlobalDifficulty;
+
+                // This is not optimal for some contracts with many potential lances (allies & enemies) which DO NOT always spawn.
+                // Non-spawning units "eat up" this limit and the actual spawning units all revert to stock then...
                 Fields.MaxAllowedTotalThreatLevelPerContract = Mathf.Clamp(Fields.GlobalDifficulty, 0, 10);
 
                 Fields.CurrentContractPlusPlusPlusUnits = 0;

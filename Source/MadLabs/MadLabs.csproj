@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MadLabs</RootNamespace>
     <AssemblyName>MadLabs</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,32 +30,24 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony" />
     <Reference Include="Assembly-CSharp" />
-    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Ref\Assembly-CSharp-firstpass.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Ref\Newtonsoft.Json.dll</HintPath>
-    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass" />
+    <Reference Include="InControl" />
+    <Reference Include="Newtonsoft.Json" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Ref\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Ref\UnityEngine.UI.dll</HintPath>
-    </Reference>
+    <Reference Include="Unity.TextMeshPro" />
+    <Reference Include="UnityEngine" />
+    <Reference Include="UnityEngine.CoreModule" />
+    <Reference Include="UnityEngine.UI" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Patches\Contracts.cs" />
@@ -62,7 +56,6 @@
     <Compile Include="Holder.cs" />
     <Compile Include="MadLabs.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Patches\ComponentGenerator.cs" />
     <Compile Include="Patches\MechLab.cs" />
     <Compile Include="Patches\Salvage.cs" />
     <Compile Include="Patches\Spawns.cs" />
@@ -76,7 +69,6 @@
     <None Include="README.md" />
     <None Include="PilotDefs\*.json" />
     <None Include="MechDefs\*.json" />
-    <None Include="ContractDefs\*.json" />
     <None Include="StreamingAssets\data\contracts\**\*.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -88,7 +80,6 @@ xcopy $(ProjectDir)README.md $(SolutionDir)..\Release\$(TargetName)\ /Y
 xcopy $(ProjectDir)README.md $(SolutionDir)..\ /Y
 xcopy $(ProjectDir)PilotDefs\*.json $(SolutionDir)..\Release\$(TargetName)\PilotDefs\ /Y
 xcopy $(ProjectDir)MechDefs\*.json $(SolutionDir)..\Release\$(TargetName)\MechDefs\ /Y
-xcopy $(ProjectDir)ContractDefs\*.json $(SolutionDir)..\Release\$(TargetName)\ContractDefs\ /Y
 xcopy $(ProjectDir)StreamingAssets\data\contracts\* $(SolutionDir)..\Release\$(TargetName)\StreamingAssets\data\contracts\ /Y /S
     </PostBuildEvent>
   </PropertyGroup>

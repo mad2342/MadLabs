@@ -43,7 +43,7 @@
                         "customUnitName" : "",
                         "customHeraldryDefId" : "",
                         "unitType" : "Mech",
-                        "unitDefId" : "mechdef_kingcrab_KGC-0000_PPP",
+                        "unitDefId" : "mechdef_kingcrab_KGC-V-0000",
                         "unitTagSet" : {
                             "items" : [
                                 "unit_heavy",

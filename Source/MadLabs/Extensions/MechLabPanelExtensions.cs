@@ -7,10 +7,9 @@ using BattleTech;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using TMPro;
 using HBS;
 using HBS.Collections;
-using Newtonsoft.Json;
+using BattleTech.UI.TMProWrapper;
 
 namespace MadLabs.Extensions
 {
@@ -85,7 +84,7 @@ namespace MadLabs.Extensions
                 MechLabInventoryWidget inventoryWidget = (MechLabInventoryWidget)AccessTools.Field(typeof(MechLabPanel), "inventoryWidget").GetValue(mechLabPanel);
                 MechLabDismountWidget dismountWidget = (MechLabDismountWidget)AccessTools.Field(typeof(MechLabPanel), "dismountWidget").GetValue(mechLabPanel);
                 MechLabMechInfoWidget mechInfoWidget = (MechLabMechInfoWidget)AccessTools.Field(typeof(MechLabPanel), "mechInfoWidget").GetValue(mechLabPanel);
-                TMP_InputField mechNickname = (TMP_InputField)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechNickname").GetValue(mechInfoWidget);
+                HBS_InputField mechNickname = (HBS_InputField)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechNickname").GetValue(mechInfoWidget);
 
                 List<MechComponentRef> dropshipInventory = mechLabPanel.Sim.GetAllInventoryItemDefs();
                 List<MechComponentRef> storageInventory = mechLabPanel.storageInventory;

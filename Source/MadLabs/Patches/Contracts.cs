@@ -2,29 +2,11 @@
 using System.Collections.Generic;
 using BattleTech;
 using BattleTech.Data;
-using BattleTech.Framework;
-using BattleTech.UI;
 using Harmony;
-using HBS.Data;
 using UnityEngine;
 
 namespace MadLabs.Patches
 {
-    [HarmonyPatch(typeof(SimGameState), "_OnAttachUXComplete")]
-    public static class SimGameState__OnAttachUXComplete_ContractGenerator
-    {
-        public static bool Prepare()
-        {
-            return MadLabs.EnableContractGenerator;
-        }
-
-        public static void Postfix(SimGameState __instance)
-        {
-            __instance.AddContract("Assassinate_Headhunt_P", "AuriganPirates", "Locals", true);
-            __instance.AddContract("Assassinate_Headhunt_PP", "MajestyMetals", "Locals", true);
-            __instance.AddContract("Assassinate_Headhunt_PPP", "Betrayers", "Locals", true);
-        }
-    }
 
     // Dynamic ContractDifficultyVariance
     [HarmonyPatch(typeof(SimGameState), "GetDifficultyRangeForContract")]
@@ -59,79 +41,6 @@ namespace MadLabs.Patches
             return false;
         }
     }
-
-    // Forcing difficulty the hard way
-    [HarmonyPatch(typeof(SimGameState), "PrepContract")]
-    public static class SimGameState_PrepContract_Patch
-    {
-        public static void Postfix(SimGameState __instance, ref Contract contract)
-        {
-            try
-            {
-                Logger.LogLine("----------------------------------------------------------------------------------------------------");
-                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Name: " + contract.Name);
-                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Difficulty: " + contract.Difficulty);
-                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Override.finalDifficulty: " + contract.Override.finalDifficulty);
-                // Why the fuck are these empty for "SimGameState.AddContract()"?
-                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Override.ID: " + contract.Override.ID);
-                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contract.Override.filename: " + contract.Override.filename);
-
-
-                //if (MadLabs.ContractOverrideIDs.Contains(contract.Override.ID))
-                if (MadLabs.ContractOverrideNames.Contains(contract.Name))
-                {
-                    Logger.LogLine("[SimGameState_PrepContract_POSTFIX] Contract (" + contract.Name + ") is an MLA Contract. Overriding difficulty...");
-
-                    int overrideDifficulty = -1;
-                    int overrideReward = -1;
-
-                    // Selecting by Difficulty as there currently is no selection by ID(s)
-                    // Custom ContractOverrides should all be between 10 and 15 (BTG normally uses only up to 9)
-                    List<Contract_MDD> contractsMDD = MetadataDatabase.Instance.GetContractsByDifficultyRange(10, 12, true);
-                    foreach (Contract_MDD contractMDD in contractsMDD)
-                    {
-                        Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractMDD.ContractID: " + contractMDD.ContractID);
-                        Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractMDD.Name: " + contractMDD.Name);
-                        Logger.LogLine("[SimGameState_PrepContract_POSTFIX] contractMDD.Difficulty: " + contractMDD.Difficulty);
-
-                        //if (contractMDD.ContractID == contract.Override.ID)
-                        if (contractMDD.Name == contract.Name)
-                        {
-                            overrideDifficulty = (int)contractMDD.Difficulty;
-
-                            if (overrideDifficulty > 0 && overrideDifficulty != contract.Difficulty)
-                            {
-                                // Set
-                                contract.SetFinalDifficulty(overrideDifficulty);
-
-                                // Adjust rewards accordingly
-                                if (contract.Override.contractRewardOverride >= 0)
-                                {
-                                    overrideReward = contract.Override.contractRewardOverride;
-                                }
-                                else
-                                {
-                                    overrideReward = __instance.CalculateContractValueByContractType(contract.ContractType, overrideDifficulty, (float)__instance.Constants.Finances.ContractPricePerDifficulty, __instance.Constants.Finances.ContractPriceVariance, 0);
-                                }
-                                overrideReward = SimGameState.RoundTo((float)overrideReward, 1000);
-                                contract.SetInitialReward(overrideReward);
-                            }
-                        }
-                    }
-                }
-
-                //Check
-                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] (" + contract.Name + ") CHECK contract.Difficulty: " + contract.Difficulty);
-                Logger.LogLine("[SimGameState_PrepContract_POSTFIX] (" + contract.Name + ") CHECK contract.Override.finalDifficulty: " + contract.Override.finalDifficulty);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e);
-            }
-        }
-    }
-
-
 
     // Info
     [HarmonyPatch(typeof(StarSystem), "GetSystemMaxContracts")]
