@@ -58,7 +58,11 @@ namespace MadLabs
                 .ToArray()
                 .Length;
             int componentCountVariant3 = mechDefInventoryFiltered
-                .Where(component => component.Def.ComponentTags.Contains("component_type_variant3") || component.Def.ComponentTags.Contains("component_type_lostech"))
+                .Where(component => component.Def.ComponentTags.Contains("component_type_variant3"))
+                .ToArray()
+                .Length;
+            int componentCountVariant4 = mechDefInventoryFiltered
+                .Where(component => component.Def.ComponentTags.Contains("component_type_variant4") || component.Def.ComponentTags.Contains("component_type_lostech"))
                 .ToArray()
                 .Length;
 
@@ -69,13 +73,14 @@ namespace MadLabs
                 Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant1: " + componentCountVariant1);
                 Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant2: " + componentCountVariant2);
                 Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant3: " + componentCountVariant3);
+                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant4: " + componentCountVariant4);
             }
 
             // Threat ranges
             Range<int> neutralRange = new Range<int>(componentCount, (int)(componentCount * 1.5));
             Range<int> plus1Range = new Range<int>((int)(componentCount * 1.5 + 1), (int)(componentCount * 2.5));
             Range<int> plus2Range = new Range<int>((int)(componentCount * 2.5 + 1), (int)(componentCount * 3.5));
-            Range<int> plus3Range = new Range<int>((int)(componentCount * 3.5 + 1), (int)(componentCount * 4));
+            Range<int> plus3Range = new Range<int>((int)(componentCount * 3.5 + 1), (int)(componentCount * 5));
 
             if (log)
             {
@@ -86,7 +91,7 @@ namespace MadLabs
             }
 
             // Simple threat classification: Stock gives 1 point, every + adds another
-            int componentClassification = (componentCount - componentCountVariant) + (componentCountVariant1 * 2) + (componentCountVariant2 * 3) + (componentCountVariant3 * 4);
+            int componentClassification = (componentCount - componentCountVariant) + (componentCountVariant1 * 2) + (componentCountVariant2 * 3) + (componentCountVariant3 * 4) + (componentCountVariant4 * 5);
 
             if (log)
             {
