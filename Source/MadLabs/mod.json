@@ -8,6 +8,8 @@
 	
   "DLL": "MadLabs.dll",
 
+  "ConflictsWith": [ "BattletechPerformanceFix" ],
+
   "Settings": {
     "SpawnInventory": true
   },
