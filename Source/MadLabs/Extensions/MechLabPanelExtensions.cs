@@ -19,6 +19,16 @@ namespace MadLabs.Extensions
         {
             string stockMechDefId = mechLabPanel.activeMechDef.ChassisID.Replace("chassisdef", "mechdef");
 
+            // Depends on LittleThings.Settings.EnableStockMechReferenceViaMechDefDescriptionModel
+            if (!string.IsNullOrEmpty(mechLabPanel.activeMechDef.Description.Model))
+            {
+                Logger.LogLine("[MechLabPanelExtensions.SetToStock] FOUND StockMechReferenceViaMechDefDescriptionModel! Overriding stockMechDefId...");
+                Logger.LogLine("[MechLabPanelExtensions.SetToStock] mechLabPanel.activeMechDef.Description.Model: " + mechLabPanel.activeMechDef.Description.Model);
+
+                stockMechDefId = mechLabPanel.activeMechDef.Description.Model.Replace("model", "mechdef");
+                Logger.LogLine("[MechLabPanelExtensions.SetToStock] stockMechDefId: " + stockMechDefId);
+            }
+
             mechLabPanel.ApplyLoadout(stockMechDefId);
         }
 
