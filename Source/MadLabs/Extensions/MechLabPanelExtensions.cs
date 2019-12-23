@@ -569,6 +569,62 @@ namespace MadLabs.Extensions
 
 
 
+        public static MechDef GetMechDefFromVariantName(this MechLabPanel mechLabPanel, string variant)
+        {
+            foreach (KeyValuePair<string, ChassisDef> chassisDefs in mechLabPanel.Sim.DataManager.ChassisDefs)
+            {
+                string chassisId = chassisDefs.Key;
+                ChassisDef chassisDef = chassisDefs.Value;
+
+                if (chassisDef.VariantName == variant || chassisDef.VariantName.ToUpper() == variant)
+                {
+                    string mechDefId = chassisDef.Description.Id.Replace("chassisdef", "mechdef");
+                    Logger.LogLine("[MechLabPanelExtensions_GetMechDefFromVariantName] Found MechDef: " + mechDefId);
+                    MechDef mechDef = mechLabPanel.Sim.DataManager.MechDefs.Get(mechDefId);
+
+                    return mechDef;
+                }
+            }
+            Logger.LogLine("[MechLabPanelExtensions_GetMechDefFromVariantName] No MechDef found for VariantName: " + variant);
+            return null;
+        }
+
+
+
+        public static void ValidateAllMechDefTonnages(this MechLabPanel mechLabPanel, bool errorsOnly = true)
+        {
+            foreach (KeyValuePair<string, MechDef> mechDefs in mechLabPanel.Sim.DataManager.MechDefs)
+            {
+                string id = mechDefs.Key;
+                MechDef mechDef = mechDefs.Value;
+                float num = 0f;
+                float tonnage = mechDef.Chassis.Tonnage;
+
+                MechStatisticsRules.CalculateTonnage(mechDef, ref num, ref tonnage);
+
+                if ((double)Mathf.Abs(num - mechDef.Chassis.Tonnage) < 0.0001)
+                {
+                    if (!errorsOnly)
+                    {
+                        Logger.LogLine("[MechLabPanelExtensions_ValidateAllMechDefTonnages] MechDef (" + mechDef.Name + "/" + id + "): Passed");
+                    }
+                }
+                else if (num > mechDef.Chassis.Tonnage)
+                {
+                    float diff = num - mechDef.Chassis.Tonnage;
+                    Logger.LogLine("[MechLabPanelExtensions_ValidateAllMechDefTonnages] MechDef (" + mechDef.Name + "/" + id + "): OVERWEIGHT (+" + diff + " Tons)");
+                }
+                //else if (num <= mechDef.Chassis.Tonnage - 0.5f)
+                else if (num < mechDef.Chassis.Tonnage)
+                {
+                    float diff = mechDef.Chassis.Tonnage - num;
+                    Logger.LogLine("[MechLabPanelExtensions_ValidateAllMechDefTonnages] MechDef (" + mechDef.Name + "/" + id + "): UNDERWEIGHT (-" + diff + " Tons)");
+                }
+            }
+        }
+
+
+
         public static void ExportCurrentMechDefToJson(this MechLabPanel mechLabPanel, string mechDefId, string mechDefName)
         {
             try

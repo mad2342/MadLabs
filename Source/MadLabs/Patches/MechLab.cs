@@ -7,6 +7,9 @@ using System.Linq;
 using System.Collections.Generic;
 using MadLabs.Extensions;
 using BattleTech.UI.TMProWrapper;
+using BattleTech;
+using HBS.Data;
+using UnityEngine;
 
 namespace MadLabs.Patches
 {
@@ -46,7 +49,9 @@ namespace MadLabs.Patches
                 stockCommands.Add("/" + mechDefaultVariant);
                 stockCommands.Add("/" + mechDefaultVariant.ToLower());
                 List<string> saveCommands = new List<string>() { "/save ", "/s ", "/export " };
-                List<string> allCommands = loadCommands.Concat(stockCommands).Concat(saveCommands).ToList();
+                List<string> validateCommands = new List<string>() { "/validate", "/v" };
+                List<string> chassisCommands = new List<string>() { "/chassis ", "/c " };
+                List<string> allCommands = loadCommands.Concat(stockCommands).Concat(saveCommands).Concat(validateCommands).Concat(chassisCommands).ToList();
 
                 string mechDefIdSuffix = "";
                 string mechDefId = "";
@@ -80,6 +85,26 @@ namespace MadLabs.Patches
                             mechDefName = mechDefName + " " + mechDefIdSuffix;
                             mechDefId = $"{mechLabPanel.activeMechDef.Description.Id}_{mechDefIdSuffix}";
                             Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] triggerSave: " + mechDefId);
+                        }
+                        else if (validateCommands.Contains(command))
+                        {
+                            Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] validating...");
+                            mechLabPanel.ValidateAllMechDefTonnages();
+                        }
+                        else if (chassisCommands.Contains(command))
+                        {
+                            string variant = currentNickname.Replace(command, "").ToUpper();
+
+                            Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] forcing new chassis in stock loadout...");
+                            Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] variant: " + variant);
+
+                            MechDef newMechDef = mechLabPanel.GetMechDefFromVariantName(variant);
+                            if (newMechDef != null)
+                            {
+                                Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] loading: " + newMechDef.Description.Id);
+                                mechLabPanel.LoadMech(newMechDef);
+                                return;
+                            }
                         }
                         else
                         {
@@ -175,8 +200,6 @@ namespace MadLabs.Patches
         }
     }
 
-
-
     [HarmonyPatch(typeof(MechLabPanel), "HandleEnterKeypress")]
     public static class MechLabPanel_HandleEnterKeypress_Patch
     {
@@ -202,11 +225,38 @@ namespace MadLabs.Patches
     {
         public static void Postfix(MechLabPanel __instance)
         {
+            if (!__instance.IsSimGame)
+            {
+                Logger.LogLine("[MechLabPanel_OnRequestResourcesComplete_POSTFIX] This is NOT SimGame. Aborting.");
+                return;
+            }
+
             Fields.IsMechLabActive = true;
             Logger.LogLine("[MechLabPanel_OnRequestResourcesComplete_POSTFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
         }
     }
 
+    // Allow high quality and custom gear in Skirmish MechLab
+    [HarmonyPatch(typeof(MechLabPanel), "ComponentDefTagsValid")]
+    public static class MechLabPanel_ComponentDefTagsValid_Patch
+    {
+        public static void Postfix(MechLabPanel __instance, MechComponentDef def, ref bool __result)
+        {
+            if (__instance.IsSimGame)
+            {
+                //Logger.LogLine("[MechLabPanel_ComponentDefTagsValid_POSTFIX] This is SimGame. Aborting.");
+                return;
+            }
+
+            Logger.LogLine("[MechLabPanel_ComponentDefTagsValid_POSTFIX] __result: " + __result);
+            Logger.LogLine("[MechLabPanel_ComponentDefTagsValid_POSTFIX] def.Description.Id: " + def.Description.Id);
+
+            __result = !def.ComponentTags.Contains("BLACKLISTED") && !def.ComponentTags.Contains("component_type_debug") && def.Description.Purchasable;
+
+            Logger.LogLine("[MechLabPanel_ComponentDefTagsValid_POSTFIX] __result: " + __result);
+            Logger.LogLine("---");
+        }
+    }
 
     // @ToDo: Limit this to only concern generic popups triggered by my patches
     [HarmonyPatch(typeof(GenericPopup), "HandleEnterKeypress")]
