@@ -22,11 +22,11 @@ namespace MadLabs.Extensions
             // Depends on LittleThings.Settings.EnableStockMechReferenceViaMechDefDescriptionModel
             if (!string.IsNullOrEmpty(mechLabPanel.activeMechDef.Description.Model))
             {
-                Logger.LogLine("[MechLabPanelExtensions.SetToStock] FOUND StockMechReferenceViaMechDefDescriptionModel! Overriding stockMechDefId...");
-                Logger.LogLine("[MechLabPanelExtensions.SetToStock] mechLabPanel.activeMechDef.Description.Model: " + mechLabPanel.activeMechDef.Description.Model);
+                Logger.Debug("[MechLabPanelExtensions.SetToStock] FOUND StockMechReferenceViaMechDefDescriptionModel! Overriding stockMechDefId...");
+                Logger.Debug("[MechLabPanelExtensions.SetToStock] mechLabPanel.activeMechDef.Description.Model: " + mechLabPanel.activeMechDef.Description.Model);
 
                 stockMechDefId = mechLabPanel.activeMechDef.Description.Model.Replace("model", "mechdef");
-                Logger.LogLine("[MechLabPanelExtensions.SetToStock] stockMechDefId: " + stockMechDefId);
+                Logger.Debug("[MechLabPanelExtensions.SetToStock] stockMechDefId: " + stockMechDefId);
             }
 
             mechLabPanel.ApplyLoadout(stockMechDefId);
@@ -107,7 +107,7 @@ namespace MadLabs.Extensions
                 {
                     if (requestedMechComponents[i].IsFixed)
                     {
-                        Logger.LogLine("[Extensions.ResetToStock] FOUND AND WILL REMOVE FIXED EQUIPMENT: " + requestedMechComponents[i].ComponentDefID);
+                        Logger.Debug("[Extensions.ResetToStock] FOUND AND WILL REMOVE FIXED EQUIPMENT: " + requestedMechComponents[i].ComponentDefID);
                         requestedMechComponents.RemoveAt(i);
                     }
                 }
@@ -131,7 +131,7 @@ namespace MadLabs.Extensions
                 // CHECK
                 foreach (MechComponentRef comp in requestedMechComponentsRequired)
                 {
-                    Logger.LogLine("[Extensions.ResetToStock] INIT requestedMechComponentsRequired: " + comp.ComponentDefID);
+                    Logger.Debug("[Extensions.ResetToStock] INIT requestedMechComponentsRequired: " + comp.ComponentDefID);
                 }
 
 
@@ -145,7 +145,7 @@ namespace MadLabs.Extensions
                     {
                         if (requestedMechComponentsRequired[i].ComponentDefID == activeMechDismountedItems[j].ComponentRef.ComponentDefID)
                         {
-                            Logger.LogLine("[Extensions.ResetToStock] FOUND in activeMechDismountedItems: " + requestedMechComponentsRequired[i].ComponentDefID);
+                            Logger.Debug("[Extensions.ResetToStock] FOUND in activeMechDismountedItems: " + requestedMechComponentsRequired[i].ComponentDefID);
                             found = true;
                             requestedMechComponentsRequired.RemoveAt(i);
                             itemsCollectedFromDismount.Add(activeMechDismountedItems[j]);
@@ -164,7 +164,7 @@ namespace MadLabs.Extensions
                     }
                     if (!found)
                     {
-                        Logger.LogLine("[Extensions.ResetToStock] NOT FOUND in activeMechDismountedItems: " + requestedMechComponentsRequired[i].ComponentDefID);
+                        Logger.Debug("[Extensions.ResetToStock] NOT FOUND in activeMechDismountedItems: " + requestedMechComponentsRequired[i].ComponentDefID);
                     }
                 }
                 // Refresh UI
@@ -175,7 +175,7 @@ namespace MadLabs.Extensions
                 // CHECK
                 foreach (MechLabItemSlotElement item in itemsCollectedFromDismount)
                 {
-                    Logger.LogLine("[Extensions.ResetToStock] itemsCollectedFromDismount: " + item.ComponentRef.ComponentDefID + ", MountedLocation: " + item.MountedLocation + ", DropParent: " + item.DropParent);
+                    Logger.Debug("[Extensions.ResetToStock] itemsCollectedFromDismount: " + item.ComponentRef.ComponentDefID + ", MountedLocation: " + item.MountedLocation + ", DropParent: " + item.DropParent);
                 }
 
 
@@ -185,7 +185,7 @@ namespace MadLabs.Extensions
                 List<InventoryItemElement_Simple> requestedMechItemsRequired = Utilities.ComponentsToInventoryItems(requestedMechComponentsRequired, true);
                 List<InventoryItemElement_Simple> missingItems = new List<InventoryItemElement_Simple>();
                 bool itemsAvailableInInventory = mechLabPanel.ItemsAvailableInInventory(requestedMechItemsRequired, localInventoryItems, out missingItems);
-                Logger.LogLine("[Extensions.ResetToStock] itemsAvailableInInventory: " + itemsAvailableInInventory);
+                Logger.Debug("[Extensions.ResetToStock] itemsAvailableInInventory: " + itemsAvailableInInventory);
 
                 if (itemsAvailableInInventory)
                 {
@@ -196,7 +196,7 @@ namespace MadLabs.Extensions
                 else
                 {
                     // Hard exit, SHOULD NEVER END UP HERE!
-                    Logger.LogLine("[Extensions.ResetToStock] MISSING ITEMS. ABORTING. YOU SHOULD NEVER SEE THIS!");
+                    Logger.Debug("[Extensions.ResetToStock] MISSING ITEMS. ABORTING. YOU SHOULD NEVER SEE THIS!");
                     mechLabPanel.OnRevertMech();
                     return;
                 }
@@ -204,7 +204,7 @@ namespace MadLabs.Extensions
                 // CHECK
                 foreach (InventoryItemElement_NotListView item in itemsCollectedFromInventory)
                 {
-                    Logger.LogLine("[Extensions.ResetToStock] itemsCollectedFromInventory: " + item.ComponentRef.ComponentDefID + ", MountedLocation: " + item.MountedLocation + ", DropParent: " + item.DropParent);
+                    Logger.Debug("[Extensions.ResetToStock] itemsCollectedFromInventory: " + item.ComponentRef.ComponentDefID + ", MountedLocation: " + item.MountedLocation + ", DropParent: " + item.DropParent);
                 }
 
 
@@ -248,11 +248,11 @@ namespace MadLabs.Extensions
                 // CHECK
                 foreach (MechComponentRef item in requestedMechComponents)
                 {
-                    Logger.LogLine("[Extensions.ResetToStock] baseMechComponents: " + item.ComponentDefID);
+                    Logger.Debug("[Extensions.ResetToStock] baseMechComponents: " + item.ComponentDefID);
                 }
                 foreach (InventoryItemElement_Simple item in requestedEquipment)
                 {
-                    Logger.LogLine("[Extensions.ResetToStock] requestedEquipment: " + item.ComponentRef.ComponentDefID + ", Origin: " + item.Origin);
+                    Logger.Debug("[Extensions.ResetToStock] requestedEquipment: " + item.ComponentRef.ComponentDefID + ", Origin: " + item.Origin);
                 }
 
                 // Set inventory including a hint to where the components were taken from
@@ -292,7 +292,7 @@ namespace MadLabs.Extensions
             }
             catch (Exception e)
             {
-                Logger.LogError(e);
+                Logger.Error(e);
             }
         }
 
@@ -313,7 +313,7 @@ namespace MadLabs.Extensions
             {
                 if (mechComponentsRequired[i].IsFixed)
                 {
-                    Logger.LogLine("[Extensions.CanApplyLoadout] FOUND AND WILL REMOVE FIXED EQUIPMENT: " + mechComponentsRequired[i].ComponentDefID);
+                    Logger.Debug("[Extensions.CanApplyLoadout] FOUND AND WILL REMOVE FIXED EQUIPMENT: " + mechComponentsRequired[i].ComponentDefID);
                     mechComponentsRequired.RemoveAt(i);
                 }
             }
@@ -351,7 +351,7 @@ namespace MadLabs.Extensions
 
             foreach (InventoryItemElement_Simple item in missingItems)
             {
-                Logger.LogLine("[Extensions.CanApplyLoadout] missingItems: " + item.ComponentRef.ComponentDefID + " (Quantity: " + item.Quantity + ")");
+                Logger.Debug("[Extensions.CanApplyLoadout] missingItems: " + item.ComponentRef.ComponentDefID + " (Quantity: " + item.Quantity + ")");
                 //errorDescriptions.Add(Environment.NewLine + "• Components missing: " + item.ComponentRef.ComponentDefID + " (Quantity: " + item.Quantity + ")");
 
                 for (int i = 0; i < item.Quantity; i++)
@@ -387,8 +387,8 @@ namespace MadLabs.Extensions
                 {
                     if (inventoryItem.ComponentRef.ComponentDefID == requiredItem.ComponentRef.ComponentDefID)
                     {
-                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory: " + inventoryItem.ComponentRef.ComponentDefID + " (Quantity: " + inventoryItem.controller.quantity + ")");
-                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requiredItems: " + requiredItem.ComponentRef.ComponentDefID + " (Quantity: " + requiredItem.Quantity + ")");
+                        Logger.Debug("[Extensions.InventoryHasAllItemsInStock] requestedInventory: " + inventoryItem.ComponentRef.ComponentDefID + " (Quantity: " + inventoryItem.controller.quantity + ")");
+                        Logger.Debug("[Extensions.InventoryHasAllItemsInStock] requiredItems: " + requiredItem.ComponentRef.ComponentDefID + " (Quantity: " + requiredItem.Quantity + ")");
                         match = true;
 
                         // Need to check the controller as a potential quantity change via store is NOT reflected properly in vanilla
@@ -425,8 +425,8 @@ namespace MadLabs.Extensions
                 {
                     if (inventoryItem.ComponentRef.ComponentDefID == requiredItem.ComponentRef.ComponentDefID)
                     {
-                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory: " + inventoryItem.ComponentRef.ComponentDefID + " (Quantity: " + inventoryItem.controller.quantity + ")");
-                        Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requiredItems: " + requiredItem.ComponentRef.ComponentDefID + " (Quantity: " + requiredItem.Quantity + ")");
+                        Logger.Debug("[Extensions.InventoryHasAllItemsInStock] requestedInventory: " + inventoryItem.ComponentRef.ComponentDefID + " (Quantity: " + inventoryItem.controller.quantity + ")");
+                        Logger.Debug("[Extensions.InventoryHasAllItemsInStock] requiredItems: " + requiredItem.ComponentRef.ComponentDefID + " (Quantity: " + requiredItem.Quantity + ")");
                         match = true;
 
                         // Need to check the controller as a potential quantity change via store is NOT reflected properly in vanilla
@@ -439,7 +439,7 @@ namespace MadLabs.Extensions
                         {
                             //return false;
 
-                            Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory is missing some: " + requiredItem.ComponentRef.ComponentDefID + " (" + (requiredItem.Quantity - inventoryItem.controller.quantity) + ")");
+                            Logger.Debug("[Extensions.InventoryHasAllItemsInStock] requestedInventory is missing some: " + requiredItem.ComponentRef.ComponentDefID + " (" + (requiredItem.Quantity - inventoryItem.controller.quantity) + ")");
 
                             InventoryItemElement_Simple missingItem = new InventoryItemElement_Simple
                             {
@@ -456,7 +456,7 @@ namespace MadLabs.Extensions
                 {
                     //return false;
 
-                    Logger.LogLine("[Extensions.InventoryHasAllItemsInStock] requestedInventory is missing all: " + requiredItem.ComponentRef.ComponentDefID + " (" + requiredItem.Quantity + ")");
+                    Logger.Debug("[Extensions.InventoryHasAllItemsInStock] requestedInventory is missing all: " + requiredItem.ComponentRef.ComponentDefID + " (" + requiredItem.Quantity + ")");
 
                     InventoryItemElement_Simple missingItem = new InventoryItemElement_Simple
                     {
@@ -538,7 +538,7 @@ namespace MadLabs.Extensions
             {
                 if (equipment[i].ComponentRef.MountedLocation == loadout.Location)
                 {
-                    Logger.LogLine("[Extensions.SetEquipment] Component: " + equipment[i].ComponentRef.ComponentDefID + " gets installed at: " + loadout.Location.ToString() + " and was fetched from (simulated): " + equipment[i].Origin);
+                    Logger.Debug("[Extensions.SetEquipment] Component: " + equipment[i].ComponentRef.ComponentDefID + " gets installed at: " + loadout.Location.ToString() + " and was fetched from (simulated): " + equipment[i].Origin);
 
                     // NOTE that creation of items (vs. simulate-grabbing the real ones from inventory) will confuse the work-order-entries
                     // @ToDo: Try setting "copyComponentRef" to true and test somewhen
@@ -579,13 +579,13 @@ namespace MadLabs.Extensions
                 if (chassisDef.VariantName == variant || chassisDef.VariantName.ToUpper() == variant)
                 {
                     string mechDefId = chassisDef.Description.Id.Replace("chassisdef", "mechdef");
-                    Logger.LogLine("[MechLabPanelExtensions_GetMechDefFromVariantName] Found MechDef: " + mechDefId);
+                    Logger.Debug("[MechLabPanelExtensions_GetMechDefFromVariantName] Found MechDef: " + mechDefId);
                     MechDef mechDef = mechLabPanel.Sim.DataManager.MechDefs.Get(mechDefId);
 
                     return mechDef;
                 }
             }
-            Logger.LogLine("[MechLabPanelExtensions_GetMechDefFromVariantName] No MechDef found for VariantName: " + variant);
+            Logger.Debug("[MechLabPanelExtensions_GetMechDefFromVariantName] No MechDef found for VariantName: " + variant);
             return null;
         }
 
@@ -606,19 +606,19 @@ namespace MadLabs.Extensions
                 {
                     if (!errorsOnly)
                     {
-                        Logger.LogLine("[MechLabPanelExtensions_ValidateAllMechDefTonnages] MechDef (" + mechDef.Name + "/" + id + "): Passed");
+                        Logger.Debug("[MechLabPanelExtensions_ValidateAllMechDefTonnages] MechDef (" + mechDef.Name + "/" + id + "): Passed");
                     }
                 }
                 else if (num > mechDef.Chassis.Tonnage)
                 {
                     float diff = num - mechDef.Chassis.Tonnage;
-                    Logger.LogLine("[MechLabPanelExtensions_ValidateAllMechDefTonnages] MechDef (" + mechDef.Name + "/" + id + "): OVERWEIGHT (+" + diff + " Tons)");
+                    Logger.Debug("[MechLabPanelExtensions_ValidateAllMechDefTonnages] MechDef (" + mechDef.Name + "/" + id + "): OVERWEIGHT (+" + diff + " Tons)");
                 }
                 //else if (num <= mechDef.Chassis.Tonnage - 0.5f)
                 else if (num < mechDef.Chassis.Tonnage)
                 {
                     float diff = mechDef.Chassis.Tonnage - num;
-                    Logger.LogLine("[MechLabPanelExtensions_ValidateAllMechDefTonnages] MechDef (" + mechDef.Name + "/" + id + "): UNDERWEIGHT (-" + diff + " Tons)");
+                    Logger.Debug("[MechLabPanelExtensions_ValidateAllMechDefTonnages] MechDef (" + mechDef.Name + "/" + id + "): UNDERWEIGHT (-" + diff + " Tons)");
                 }
             }
         }
@@ -648,7 +648,7 @@ namespace MadLabs.Extensions
                     for (int i = 0; i < mechDefWeaponsAtLocation.Length; i++)
                     {
                         new Traverse(mechDefWeaponsAtLocation[i]).Property("HardpointSlot").SetValue(i);
-                        Logger.LogLine("[Extensions.ExportCurrentMechDefToJson] (" + chassisLocation + ") (" + mechDefWeaponsAtLocation[i].ComponentDefID + ") HardpointSlot: " + mechDefWeaponsAtLocation[i].HardpointSlot);
+                        Logger.Debug("[Extensions.ExportCurrentMechDefToJson] (" + chassisLocation + ") (" + mechDefWeaponsAtLocation[i].ComponentDefID + ") HardpointSlot: " + mechDefWeaponsAtLocation[i].HardpointSlot);
                     }
                 }
 
@@ -658,7 +658,7 @@ namespace MadLabs.Extensions
                 string additionalTag = Utilities.GetMechTagForThreatLevel(threatLevel);
 
 
-                Logger.LogLine("[Extensions.ExportCurrentMechDefToJson] additionalTag: " + additionalTag);
+                Logger.Debug("[Extensions.ExportCurrentMechDefToJson] additionalTag: " + additionalTag);
 
                 // Set some halfway correct value for part value
                 int simGameMechPartCost = mechDef.SimGameMechPartCost > 0 ? mechDef.SimGameMechPartCost : (mechDef.BattleValue / 10);
@@ -721,7 +721,7 @@ namespace MadLabs.Extensions
             }
             catch (Exception e)
             {
-                Logger.LogError(e);
+                Logger.Error(e);
             }
         }
     }

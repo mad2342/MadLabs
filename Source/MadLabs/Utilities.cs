@@ -68,12 +68,12 @@ namespace MadLabs
 
             if (log)
             {
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentCount: " + componentCount);
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant: " + componentCountVariant);
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant1: " + componentCountVariant1);
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant2: " + componentCountVariant2);
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant3: " + componentCountVariant3);
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant4: " + componentCountVariant4);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] componentCount: " + componentCount);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant: " + componentCountVariant);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant1: " + componentCountVariant1);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant2: " + componentCountVariant2);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant3: " + componentCountVariant3);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] componentCountVariant4: " + componentCountVariant4);
             }
 
             // Threat ranges
@@ -84,10 +84,10 @@ namespace MadLabs
 
             if (log)
             {
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] neutralRange: " + neutralRange);
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] plus1Range: " + plus1Range);
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] plus2Range: " + plus2Range);
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] plus3Range: " + plus3Range);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] neutralRange: " + neutralRange);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] plus1Range: " + plus1Range);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] plus2Range: " + plus2Range);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] plus3Range: " + plus3Range);
             }
 
             // Simple threat classification: Stock gives 1 point, every + adds another
@@ -95,7 +95,7 @@ namespace MadLabs
 
             if (log)
             {
-                Logger.LogLine("[Utilities.GetExtraThreatLevelFromMechDef] componentClassification: " + componentClassification);
+                Logger.Debug("[Utilities.GetExtraThreatLevelFromMechDef] componentClassification: " + componentClassification);
             }
 
             if (plus1Range.ContainsValue(componentClassification))
@@ -122,7 +122,7 @@ namespace MadLabs
             {
                 if (log)
                 {
-                    Logger.LogLine("[Utilities.ComponentsToInventory] mechComponents contains: " + component.ComponentDefID);
+                    Logger.Debug("[Utilities.ComponentsToInventory] mechComponents contains: " + component.ComponentDefID);
                 }
 
                 if (mechInventoryItems.Exists(x => x.ComponentRef.ComponentDefID == component.ComponentDefID))
@@ -142,7 +142,7 @@ namespace MadLabs
             {
                 foreach (InventoryItemElement_Simple item in mechInventoryItems)
                 {
-                    Logger.LogLine("[Utilities.ComponentsToInventory] mechInventoryItems contains: " + item.ComponentRef.ComponentDefID + "(" + item.Quantity + ")");
+                    Logger.Debug("[Utilities.ComponentsToInventory] mechInventoryItems contains: " + item.ComponentRef.ComponentDefID + "(" + item.Quantity + ")");
                 }
             }
 

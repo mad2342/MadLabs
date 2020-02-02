@@ -8,15 +8,15 @@ namespace MadLabs.Extensions
         {
             if (item.controller != null)
             {
-                //Logger.LogLine("[Extensions.MechLabInventoryWidget.RemoveItem] item.controller != null");
+                //Logger.Debug("[Extensions.MechLabInventoryWidget.RemoveItem] item.controller != null");
                 if (item.controller.quantity > 1)
                 {
                     item.controller.ModifyQuantity(-1);
-                    //Logger.LogLine("[Extensions.MechLabInventoryWidget.RemoveItem] item.controller.quantity: " + item.controller.quantity);
+                    //Logger.Debug("[Extensions.MechLabInventoryWidget.RemoveItem] item.controller.quantity: " + item.controller.quantity);
                 }
                 else
                 {
-                    //Logger.LogLine("[Extensions.MechLabInventoryWidget.RemoveItem] item.controller.quantity <= 1: " + item.controller.quantity);
+                    //Logger.Debug("[Extensions.MechLabInventoryWidget.RemoveItem] item.controller.quantity <= 1: " + item.controller.quantity);
                     inventoryWidget.localInventory.Remove(item);
                     item.SetRadioParent(null);
                     item.controller.Pool();
@@ -35,7 +35,7 @@ namespace MadLabs.Extensions
             }
             if (!inventoryWidget.localInventory.Contains(item))
             {
-                //Logger.LogLine("[Extensions.MechLabInventoryWidget.RemoveItem] !inventoryWidget.localInventory.Contains(item): HIDING item");
+                //Logger.Debug("[Extensions.MechLabInventoryWidget.RemoveItem] !inventoryWidget.localInventory.Contains(item): HIDING item");
                 item.ElementVisible = false;
             }
             inventoryWidget.ApplySorting(true);

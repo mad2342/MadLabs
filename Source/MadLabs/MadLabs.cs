@@ -28,7 +28,7 @@ namespace MadLabs
             catch (Exception e)
             {
                 Settings = new Settings();
-                Logger.LogError(e);
+                Logger.Error(e);
             }
 
             // Harmony calls need to go last here because their Prepare() methods directly check Settings...

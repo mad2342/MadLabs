@@ -25,18 +25,18 @@ namespace MadLabs.Patches
 
                 if (!mechLabPanel.IsSimGame)
                 {
-                    Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] This is NOT SimGame. Aborting.");
+                    Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] This is NOT SimGame. Aborting.");
                     return;
                 }
 
                 HBS_InputField mechNickname = (HBS_InputField)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechNickname").GetValue(__instance);
                 string mechDefaultVariant = mechLabPanel.activeMechDef.Chassis.VariantName;
-                Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] mechDefaultVariant: " + mechDefaultVariant);
+                Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] mechDefaultVariant: " + mechDefaultVariant);
                 string currentNickname = mechNickname.text;
 
                 if (string.IsNullOrEmpty(currentNickname) || (currentNickname.Length > 0 && currentNickname.Substring(0, 1) != "/"))
                 {
-                    Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] no command");
+                    Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] no command");
                     return;
                 }
 
@@ -70,13 +70,13 @@ namespace MadLabs.Patches
                             triggerLoad = true;
 
                             mechDefId = $"{mechLabPanel.activeMechDef.Description.Id}_{mechDefIdSuffix}";
-                            Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] triggerLoad: " + mechDefId);
+                            Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] triggerLoad: " + mechDefId);
                         }
                         else if (stockCommands.Contains(command))
                         {
                             triggerStock = true;
 
-                            Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] triggerStock");
+                            Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] triggerStock");
                         }
                         else if (saveCommands.Contains(command))
                         {
@@ -84,31 +84,31 @@ namespace MadLabs.Patches
 
                             mechDefName = mechDefName + " " + mechDefIdSuffix;
                             mechDefId = $"{mechLabPanel.activeMechDef.Description.Id}_{mechDefIdSuffix}";
-                            Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] triggerSave: " + mechDefId);
+                            Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] triggerSave: " + mechDefId);
                         }
                         else if (validateCommands.Contains(command))
                         {
-                            Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] validating...");
+                            Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] validating...");
                             mechLabPanel.ValidateAllMechDefTonnages();
                         }
                         else if (chassisCommands.Contains(command))
                         {
                             string variant = currentNickname.Replace(command, "").ToUpper();
 
-                            Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] forcing new chassis in stock loadout...");
-                            Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] variant: " + variant);
+                            Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] forcing new chassis in stock loadout...");
+                            Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] variant: " + variant);
 
                             MechDef newMechDef = mechLabPanel.GetMechDefFromVariantName(variant);
                             if (newMechDef != null)
                             {
-                                Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] loading: " + newMechDef.Description.Id);
+                                Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] loading: " + newMechDef.Description.Id);
                                 mechLabPanel.LoadMech(newMechDef);
                                 return;
                             }
                         }
                         else
                         {
-                            Logger.LogLine("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] no action defined for command: " + command);
+                            Logger.Debug("[MechLabMechInfoWidget_OnNameInputEndEdit_POSTFIX] no action defined for command: " + command);
                         }
 
                     }
@@ -164,7 +164,7 @@ namespace MadLabs.Patches
             }
             catch (Exception e)
             {
-                Logger.LogError(e);
+                Logger.Error(e);
             }
         }
     }
@@ -182,11 +182,11 @@ namespace MadLabs.Patches
 
                 if (!mechLabPanel.IsSimGame)
                 {
-                    Logger.LogLine("[MechLabMechInfoWidget_SetData_PREFIX] This is NOT SimGame. Aborting.");
+                    Logger.Debug("[MechLabMechInfoWidget_SetData_PREFIX] This is NOT SimGame. Aborting.");
                     return;
                 }
 
-                Logger.LogLine("[MechLabMechInfoWidget_SetData_PREFIX] Disable text validation, expand character limit");
+                Logger.Debug("[MechLabMechInfoWidget_SetData_PREFIX] Disable text validation, expand character limit");
 
                 HBS_InputField mechNickname = (HBS_InputField)AccessTools.Field(typeof(MechLabMechInfoWidget), "mechNickname").GetValue(__instance);
                 mechNickname.characterLimit = 20;
@@ -195,7 +195,7 @@ namespace MadLabs.Patches
             }
             catch (Exception e)
             {
-                Logger.LogError(e);
+                Logger.Error(e);
             }
         }
     }
@@ -205,7 +205,7 @@ namespace MadLabs.Patches
     {
         public static bool Prefix(MechLabPanel __instance)
         {
-            Logger.LogLine("[MechLabPanel_HandleEnterKeypress_PREFIX] Disable EnterKeyPress");
+            Logger.Debug("[MechLabPanel_HandleEnterKeypress_PREFIX] Disable EnterKeyPress");
             return false;
         }
     }
@@ -216,7 +216,7 @@ namespace MadLabs.Patches
         public static void Postfix(MechLabPanel __instance)
         {
             Fields.IsMechLabActive = false;
-            Logger.LogLine("[MechLabPanel_ExitMechLab_POSTFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
+            Logger.Debug("[MechLabPanel_ExitMechLab_POSTFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
         }
     }
 
@@ -227,12 +227,12 @@ namespace MadLabs.Patches
         {
             if (!__instance.IsSimGame)
             {
-                Logger.LogLine("[MechLabPanel_OnRequestResourcesComplete_POSTFIX] This is NOT SimGame. Aborting.");
+                Logger.Debug("[MechLabPanel_OnRequestResourcesComplete_POSTFIX] This is NOT SimGame. Aborting.");
                 return;
             }
 
             Fields.IsMechLabActive = true;
-            Logger.LogLine("[MechLabPanel_OnRequestResourcesComplete_POSTFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
+            Logger.Debug("[MechLabPanel_OnRequestResourcesComplete_POSTFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
         }
     }
 
@@ -244,17 +244,17 @@ namespace MadLabs.Patches
         {
             if (__instance.IsSimGame)
             {
-                //Logger.LogLine("[MechLabPanel_ComponentDefTagsValid_POSTFIX] This is SimGame. Aborting.");
+                //Logger.Debug("[MechLabPanel_ComponentDefTagsValid_POSTFIX] This is SimGame. Aborting.");
                 return;
             }
 
-            Logger.LogLine("[MechLabPanel_ComponentDefTagsValid_POSTFIX] __result: " + __result);
-            Logger.LogLine("[MechLabPanel_ComponentDefTagsValid_POSTFIX] def.Description.Id: " + def.Description.Id);
+            Logger.Debug("[MechLabPanel_ComponentDefTagsValid_POSTFIX] __result: " + __result);
+            Logger.Debug("[MechLabPanel_ComponentDefTagsValid_POSTFIX] def.Description.Id: " + def.Description.Id);
 
             __result = !def.ComponentTags.Contains("BLACKLISTED") && !def.ComponentTags.Contains("component_type_debug") && def.Description.Purchasable;
 
-            Logger.LogLine("[MechLabPanel_ComponentDefTagsValid_POSTFIX] __result: " + __result);
-            Logger.LogLine("---");
+            Logger.Debug("[MechLabPanel_ComponentDefTagsValid_POSTFIX] __result: " + __result);
+            Logger.Debug("---");
         }
     }
 
@@ -264,11 +264,11 @@ namespace MadLabs.Patches
     {
         public static bool Prefix(GenericPopup __instance)
         {
-            Logger.LogLine("[GenericPopup_HandleEnterKeypress_PREFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
+            Logger.Debug("[GenericPopup_HandleEnterKeypress_PREFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
             
             if (Fields.IsMechLabActive)
             {
-                Logger.LogLine("[GenericPopup_HandleEnterKeypress_PREFIX] Disable EnterKeyPress");
+                Logger.Debug("[GenericPopup_HandleEnterKeypress_PREFIX] Disable EnterKeyPress");
                 return false;
             }
             return true;
