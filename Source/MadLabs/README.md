@@ -16,6 +16,7 @@
   * "/stock" will try to set current Mech to its stock loadout
   * "/save XXX" or "/export XXX" will try to save the current MechDef as "mechdef_{$mechname}_{$variant}_XXX.json"
   * "/load XXX" or "/apply XXX" will try to load the specified MechDef and apply its loadout
+  * "/chassis XXX" or "/c XXX" will force load new chassis with XXX being the variant name (ie GRF-1N)
 
 ## Known issues
 * The inventory of the loaded MechDef does not properly implement the work-order meta

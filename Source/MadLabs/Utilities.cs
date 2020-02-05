@@ -22,6 +22,7 @@ namespace MadLabs
         }
 
 
+
         public static int GetExtraThreatLevelFromMechDef(MechDef mechDef, bool log = false)
         {
             int result = 0;
@@ -113,6 +114,8 @@ namespace MadLabs
 
             return result;
         }
+
+
 
         public static List<InventoryItemElement_Simple> ComponentsToInventoryItems(List<MechComponentRef> mechComponents, bool log = false)
         {

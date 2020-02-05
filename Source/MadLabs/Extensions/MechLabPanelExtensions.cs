@@ -32,6 +32,8 @@ namespace MadLabs.Extensions
             mechLabPanel.ApplyLoadout(stockMechDefId);
         }
 
+
+
         public static void ApplyLoadout(this MechLabPanel mechLabPanel, string mechDefId)
         {
             try
@@ -296,6 +298,8 @@ namespace MadLabs.Extensions
             }
         }
 
+
+
         public static bool CanApplyLoadout(this MechLabPanel mechLabPanel, MechDef mechDef, out List<string> errorDescriptions)
         {
             bool result = false;
@@ -377,6 +381,8 @@ namespace MadLabs.Extensions
 
             return result;
         }
+
+
 
         public static bool ItemsAvailableInInventory(this MechLabPanel mechLabPanel, List<InventoryItemElement_Simple> requiredItems, List<InventoryItemElement_NotListView> requestedInventory)
         {
@@ -500,6 +506,8 @@ namespace MadLabs.Extensions
             }
             return collectedItems;
         }
+
+
 
         public static void SetArmor(this MechLabPanel mechLabPanel, MechLabLocationWidget locationWidget, LocationLoadoutDef loadout)
         {

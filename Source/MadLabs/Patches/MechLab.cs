@@ -2,18 +2,14 @@
 using Harmony;
 using BattleTech.UI;
 using HBS;
-using TMPro;
 using System.Linq;
 using System.Collections.Generic;
 using MadLabs.Extensions;
 using BattleTech.UI.TMProWrapper;
 using BattleTech;
-using HBS.Data;
-using UnityEngine;
 
 namespace MadLabs.Patches
 {
-
     [HarmonyPatch(typeof(MechLabMechInfoWidget), "OnNameInputEndEdit")]
     public static class MechLabMechInfoWidget_OnNameInputEndEdit_Patch
     {
@@ -200,6 +196,8 @@ namespace MadLabs.Patches
         }
     }
 
+
+
     [HarmonyPatch(typeof(MechLabPanel), "HandleEnterKeypress")]
     public static class MechLabPanel_HandleEnterKeypress_Patch
     {
@@ -210,6 +208,8 @@ namespace MadLabs.Patches
         }
     }
 
+
+
     [HarmonyPatch(typeof(MechLabPanel), "ExitMechLab")]
     public static class MechLabPanel_ExitMechLab_Patch
     {
@@ -219,6 +219,8 @@ namespace MadLabs.Patches
             Logger.Debug("[MechLabPanel_ExitMechLab_POSTFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
         }
     }
+
+
 
     [HarmonyPatch(typeof(MechLabPanel), "OnRequestResourcesComplete")]
     public static class MechLabPanel_OnRequestResourcesComplete_Patch
@@ -235,6 +237,26 @@ namespace MadLabs.Patches
             Logger.Debug("[MechLabPanel_OnRequestResourcesComplete_POSTFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
         }
     }
+
+
+
+    [HarmonyPatch(typeof(GenericPopup), "HandleEnterKeypress")]
+    public static class GenericPopup_HandleEnterKeypress_Patch
+    {
+        public static bool Prefix(GenericPopup __instance)
+        {
+            Logger.Debug("[GenericPopup_HandleEnterKeypress_PREFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
+            
+            if (Fields.IsMechLabActive)
+            {
+                Logger.Debug("[GenericPopup_HandleEnterKeypress_PREFIX] Disable EnterKeyPress");
+                return false;
+            }
+            return true;
+        }
+    }
+
+
 
     // Allow high quality and custom gear in Skirmish MechLab
     [HarmonyPatch(typeof(MechLabPanel), "ComponentDefTagsValid")]
@@ -255,23 +277,6 @@ namespace MadLabs.Patches
 
             Logger.Debug("[MechLabPanel_ComponentDefTagsValid_POSTFIX] __result: " + __result);
             Logger.Debug("---");
-        }
-    }
-
-    // @ToDo: Limit this to only concern generic popups triggered by my patches
-    [HarmonyPatch(typeof(GenericPopup), "HandleEnterKeypress")]
-    public static class GenericPopup_HandleEnterKeypress_Patch
-    {
-        public static bool Prefix(GenericPopup __instance)
-        {
-            Logger.Debug("[GenericPopup_HandleEnterKeypress_PREFIX] Fields.IsMechLabActive: " + Fields.IsMechLabActive);
-            
-            if (Fields.IsMechLabActive)
-            {
-                Logger.Debug("[GenericPopup_HandleEnterKeypress_PREFIX] Disable EnterKeyPress");
-                return false;
-            }
-            return true;
         }
     }
 }
