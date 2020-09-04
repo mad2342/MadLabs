@@ -1,8 +1,8 @@
 {
   "Name": "MadLabs",
-  "Enabled": false,
+  "Enabled": true,
 
-  "Version": "1.8.1-002b",
+  "Version": "1.9.1-001b",
   "Description": "Campaign MechLab features save/load of mech definitions as well as a reset to stock loadout.",
   "Author": "Mad",
 	
@@ -11,7 +11,8 @@
   "ConflictsWith": [ "BattletechPerformanceFix" ],
 
   "Settings": {
-    "SpawnInventory": false
+    "SpawnInventory": false,
+    "BlacklistExportedMechDefs": true
   },
 
   "Manifest": [

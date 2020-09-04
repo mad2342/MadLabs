@@ -684,6 +684,12 @@ namespace MadLabs.Extensions
                     TagSet mechTags = new TagSet(baseMechDef.MechTags);
                     mechTags.Add("unit_madlabs");
                     mechTags.Add(additionalTag);
+
+                    if (MadLabs.Settings.BlacklistExportedMechDefs)
+                    {
+                        mechTags.Add("BLACKLISTED");
+                    }
+
                     string mechTagsJson = mechTags.ToJSON();
 
                     // Fix MechDefJson
