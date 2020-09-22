@@ -16,6 +16,6 @@
   },
 
   "Manifest": [
-    { "Type": "MechDef", "Path": "MechDefs\\" },
+    { "Type": "MechDef", "Path": "MechDefs/" },
   ]
 }
