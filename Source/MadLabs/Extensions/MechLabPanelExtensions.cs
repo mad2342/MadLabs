@@ -485,6 +485,7 @@ namespace MadLabs.Extensions
             List<InventoryItemElement_NotListView> collectedItems = new List<InventoryItemElement_NotListView>();
 
             // Reverse iterate to be able to directly remove without exception
+            // BEWARE: Throws exception if the inventory gets completely emptied during this process (very unlikely but possible)
             for (int i = requestedInventory.Count - 1; i >= 0; i--)
             {
                 foreach (InventoryItemElement_Simple requiredItem in requiredItems)
